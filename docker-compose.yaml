@@ -1,0 +1,53 @@
+services:
+  admin-service:
+    build:
+        context: ./admin-service
+        dockerfile: Dockerfile
+    image: emzedam/admin-service:0.0.1
+    container_name: "admin-service-container"
+    volumes:
+      - ./admin-service:/var/www/html
+    environment:
+      - DB_HOST=${ADMIN_DB_HOST}
+      - DB_PORT=${ADMIN_DB_PORT}
+      - DB_DATABASE=${ADMIN_DB_DATABASE}
+      - DB_USERNAME=${ADMIN_DB_USERNAME}
+      - DB_PASSWORD=${ADMIN_DB_PASSWORD}
+    depends_on:
+      - admin-service-postgres
+    networks:
+      - online-shop-network
+
+  admin-service-postgres:
+    image: postgres:15
+    restart: always
+    ports:
+      - "5430:5432"
+    environment:
+      POSTGRES_DB: ${ADMIN_DB_DATABASE}
+      POSTGRES_USER: ${ADMIN_DB_USERNAME}
+      POSTGRES_PASSWORD: ${ADMIN_DB_PASSWORD} 
+    volumes:
+      - damin_service_postgres_data:/var/lib/postgresql/data
+    networks:
+      - online-shop-network
+
+  admin-service-nginx:
+    image: nginx:alpine
+    ports:
+      - "8000:80"
+    volumes:
+      - ./admin-service:/var/www/html
+      - ./admin-service/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - admin-service
+    networks:
+      - online-shop-network
+
+
+volumes:
+  damin_service_postgres_data:
+
+networks:
+  online-shop-network:
+    driver: bridge
