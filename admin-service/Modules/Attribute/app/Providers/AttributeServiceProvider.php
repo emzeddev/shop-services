@@ -5,6 +5,7 @@ namespace Modules\Attribute\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
+use Modules\Attribute\Proxies\AttributeProxy;
 
 class AttributeServiceProvider extends ServiceProvider
 {
@@ -34,6 +35,8 @@ class AttributeServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
+
+        $this->app->bind('Modules\Attribute\Interface\Attribute', AttributeProxy::class);
     }
 
     /**
