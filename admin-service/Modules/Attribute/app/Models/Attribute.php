@@ -5,7 +5,7 @@ namespace Modules\Attribute\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Attribute\Database\Factories\AttributeFactory;
-use Modules\Attribute\Interfaces\Attribute as AttributeContract;
+use Modules\Attribute\Contracts\Attribute as AttributeContract;
 
 class Attribute extends Model implements AttributeContract
 {

@@ -5,7 +5,9 @@ namespace Modules\Attribute\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
-use Modules\Attribute\Proxies\AttributeProxy;
+// use Modules\Attribute\Proxies\AttributeProxy;
+use Modules\Attribute\Contracts\Attribute as AttributeContract;
+use Modules\Attribute\Models\Attribute;
 
 class AttributeServiceProvider extends ServiceProvider
 {
@@ -14,6 +16,10 @@ class AttributeServiceProvider extends ServiceProvider
     protected string $name = 'Attribute';
 
     protected string $nameLower = 'attribute';
+
+    // protected $models = [
+    //     AttributeContract::class => Attribute::class,
+    // ];
 
     /**
      * Boot the application events.
@@ -26,6 +32,11 @@ class AttributeServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+
+        $this->app->concord->registerModel(
+            AttributeContract::class,
+            Attribute::class
+        );
     }
 
     /**
@@ -36,7 +47,6 @@ class AttributeServiceProvider extends ServiceProvider
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
 
-        $this->app->bind('Modules\Attribute\Interface\Attribute', AttributeProxy::class);
     }
 
     /**
