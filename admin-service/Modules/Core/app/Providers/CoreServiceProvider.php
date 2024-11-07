@@ -1,25 +1,18 @@
 <?php
 
-namespace Modules\Attribute\Providers;
+namespace Modules\Core\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
-// use Modules\Attribute\Proxies\AttributeProxy;
-use Modules\Attribute\Contracts\Attribute as AttributeContract;
-use Modules\Attribute\Models\Attribute;
 
-class AttributeServiceProvider extends ServiceProvider
+class CoreServiceProvider extends ServiceProvider
 {
     use PathNamespace;
 
-    protected string $name = 'Attribute';
+    protected string $name = 'Core';
 
-    protected string $nameLower = 'attribute';
-
-    // protected $models = [
-    //     AttributeContract::class => Attribute::class,
-    // ];
+    protected string $nameLower = 'core';
 
     /**
      * Boot the application events.
@@ -32,11 +25,6 @@ class AttributeServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
-
-        $this->app->concord->registerModel(
-            AttributeContract::class,
-            Attribute::class
-        );
     }
 
     /**
@@ -48,6 +36,8 @@ class AttributeServiceProvider extends ServiceProvider
         $this->app->register(RouteServiceProvider::class);
 
     }
+
+
 
     /**
      * Register commands in the format of Command::class
@@ -90,7 +80,8 @@ class AttributeServiceProvider extends ServiceProvider
     protected function registerConfig(): void
     {
         $this->publishes([
-            module_path($this->name, 'config/config.php') => config_path($this->nameLower.'.php')
+            module_path($this->name, 'config/config.php') => config_path($this->nameLower.'.php'),
+            module_path($this->name, 'config/repository.php')    => config_path('repository.php')
         ], 'config');
         $this->mergeConfigFrom(module_path($this->name, 'config/config.php'), $this->nameLower);
     }
