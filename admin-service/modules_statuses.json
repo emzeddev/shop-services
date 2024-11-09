@@ -1,4 +1,5 @@
 {
     "Attribute": true,
-    "Core": true
+    "Core": true,
+    "Installer": true
 }

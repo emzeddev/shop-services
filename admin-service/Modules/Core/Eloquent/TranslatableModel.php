@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkul\Core\Eloquent;
+namespace Modules\Core\Eloquent;
 
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,6 +18,4 @@ class TranslatableModel extends Model
     {
         return app(Locales::class);
     }
-
-    
 }

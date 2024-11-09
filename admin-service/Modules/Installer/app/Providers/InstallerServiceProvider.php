@@ -1,40 +1,18 @@
 <?php
 
-namespace Modules\Attribute\Providers;
+namespace Modules\Installer\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
-// use Modules\Attribute\Proxies\AttributeProxy;
-use Modules\Attribute\Contracts\Attribute as AttributeContract;
-use Modules\Attribute\Models\Attribute;
 
-use Modules\Attribute\Contracts\AttributeFamily as AttributeFamilyContract;
-use Modules\Attribute\Models\AttributeFamily;
-
-use Modules\Attribute\Contracts\AttributeGroup as AttributeGroupContract;
-use Modules\Attribute\Models\AttributeGroup;
-
-use Modules\Attribute\Contracts\AttributeOption as AttributeOptionContract;
-use Modules\Attribute\Models\AttributeOption;
-
-use Modules\Attribute\Contracts\AttributeOptionTranslation as AttributeOptionTranslationContract;
-use Modules\Attribute\Models\AttributeOptionTranslation;
-
-use Modules\Attribute\Contracts\AttributeTranslation as AttributeTranslationContract;
-use Modules\Attribute\Models\AttributeTranslation;
-
-class AttributeServiceProvider extends ServiceProvider
+class InstallerServiceProvider extends ServiceProvider
 {
     use PathNamespace;
 
-    protected string $name = 'Attribute';
+    protected string $name = 'Installer';
 
-    protected string $nameLower = 'attribute';
-
-    // protected $models = [
-    //     AttributeContract::class => Attribute::class,
-    // ];
+    protected string $nameLower = 'installer';
 
     /**
      * Boot the application events.
@@ -47,13 +25,7 @@ class AttributeServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
-
-        $this->registerModelProxies();
-
-        
     }
-
-   
 
     /**
      * Register the service provider.
@@ -62,7 +34,6 @@ class AttributeServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
-
     }
 
     /**
@@ -105,9 +76,7 @@ class AttributeServiceProvider extends ServiceProvider
      */
     protected function registerConfig(): void
     {
-        $this->publishes([
-            module_path($this->name, 'config/config.php') => config_path($this->nameLower.'.php')
-        ], 'config');
+        $this->publishes([module_path($this->name, 'config/config.php') => config_path($this->nameLower.'.php')], 'config');
         $this->mergeConfigFrom(module_path($this->name, 'config/config.php'), $this->nameLower);
     }
 
@@ -145,38 +114,5 @@ class AttributeServiceProvider extends ServiceProvider
         }
 
         return $paths;
-    }
-
-
-    public function registerModelProxies() {
-        $this->app->concord->registerModel(
-            AttributeContract::class,
-            Attribute::class
-        );
-
-        $this->app->concord->registerModel(
-            AttributeFamilyContract::class,
-            AttributeFamily::class
-        );
-
-        $this->app->concord->registerModel(
-            AttributeGroupContract::class,
-            AttributeGroup::class
-        );
-
-        $this->app->concord->registerModel(
-            AttributeOptionContract::class,
-            AttributeOption::class
-        );
-
-        $this->app->concord->registerModel(
-            AttributeOptionTranslationContract::class,
-            AttributeOptionTranslation::class
-        );
-
-        $this->app->concord->registerModel(
-            AttributeTranslationContract::class,
-            AttributeTranslation::class
-        );
     }
 }

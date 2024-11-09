@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Attribute\Contracts\AttributeOption as AttributeOptionContract;
 use Modules\Attribute\Database\Factories\AttributeOptionFactory;
-use Webkul\Core\Eloquent\TranslatableModel;
+use Modules\Core\Eloquent\TranslatableModel;
 
 class AttributeOption extends TranslatableModel implements AttributeOptionContract
 {
