@@ -1,0 +1,11 @@
+{
+    "name": "DataGrid",
+    "alias": "datagrid",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\DataGrid\\Providers\\DataGridServiceProvider"
+    ],
+    "files": []
+}

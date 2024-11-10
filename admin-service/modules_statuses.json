@@ -1,5 +1,6 @@
 {
     "Attribute": true,
     "Core": true,
-    "Installer": true
+    "Installer": true,
+    "DataGrid": true
 }

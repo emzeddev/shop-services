@@ -28,7 +28,7 @@ class AttributeGroupTableSeeder extends Seeder
             [
                 'id'                  => 1,
                 'code'                => 'general',
-                'name'                => trans('installer::app.seeders.attribute.attribute-groups.general', [], $defaultLocale),
+                'name'                => 'general',
                 'column'              => 1,
                 'is_user_defined'     => 0,
                 'position'            => 1,
@@ -36,7 +36,7 @@ class AttributeGroupTableSeeder extends Seeder
             ], [
                 'id'                  => 2,
                 'code'                => 'description',
-                'name'                => trans('installer::app.seeders.attribute.attribute-groups.description', [], $defaultLocale),
+                'name'                => 'description',
                 'column'              => 1,
                 'is_user_defined'     => 0,
                 'position'            => 2,
@@ -44,7 +44,7 @@ class AttributeGroupTableSeeder extends Seeder
             ], [
                 'id'                  => 3,
                 'code'                => 'meta_description',
-                'name'                => trans('installer::app.seeders.attribute.attribute-groups.meta-description', [], $defaultLocale),
+                'name'                => 'meta-description',
                 'column'              => 1,
                 'is_user_defined'     => 0,
                 'position'            => 3,
@@ -52,7 +52,7 @@ class AttributeGroupTableSeeder extends Seeder
             ], [
                 'id'                  => 4,
                 'code'                => 'price',
-                'name'                => trans('installer::app.seeders.attribute.attribute-groups.price', [], $defaultLocale),
+                'name'                => 'price',
                 'column'              => 2,
                 'is_user_defined'     => 0,
                 'position'            => 1,
@@ -60,7 +60,7 @@ class AttributeGroupTableSeeder extends Seeder
             ], [
                 'id'                  => 5,
                 'code'                => 'shipping',
-                'name'                => trans('installer::app.seeders.attribute.attribute-groups.shipping', [], $defaultLocale),
+                'name'                => 'shipping',
                 'column'              => 2,
                 'is_user_defined'     => 0,
                 'position'            => 2,
@@ -68,7 +68,7 @@ class AttributeGroupTableSeeder extends Seeder
             ], [
                 'id'                  => 6,
                 'code'                => 'settings',
-                'name'                => trans('installer::app.seeders.attribute.attribute-groups.settings', [], $defaultLocale),
+                'name'                => 'settings',
                 'column'              => 2,
                 'is_user_defined'     => 0,
                 'position'            => 3,
@@ -76,7 +76,7 @@ class AttributeGroupTableSeeder extends Seeder
             ], [
                 'id'                  => 7,
                 'code'                => 'inventories',
-                'name'                => trans('installer::app.seeders.attribute.attribute-groups.inventories', [], $defaultLocale),
+                'name'                => 'inventories',
                 'column'              => 2,
                 'is_user_defined'     => 0,
                 'position'            => 4,

@@ -24,7 +24,7 @@ class AttributeFamilyTableSeeder extends Seeder
             [
                 'id'              => 1,
                 'code'            => 'default',
-                'name'            => trans('installer::app.seeders.attribute.attribute-families.default', [], $defaultLocale),
+                'name'            => 'default',
                 'status'          => 0,
                 'is_user_defined' => 1,
             ],
