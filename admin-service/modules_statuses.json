@@ -2,5 +2,6 @@
     "Attribute": true,
     "Core": true,
     "Installer": true,
-    "DataGrid": true
+    "DataGrid": true,
+    "User": true
 }

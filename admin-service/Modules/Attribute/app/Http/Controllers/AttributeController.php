@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Admin\Http\Controllers\Catalog;
+namespace Modules\Attribute\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Event;
@@ -42,9 +42,9 @@ class AttributeController extends MainController
      */
     public function create()
     {
-        $locales = core()->getAllLocales();
+        // $locales = core()->getAllLocales();
 
-        return view('admin::catalog.attributes.create', compact('locales'));
+        // return view('admin::catalog.attributes.create', compact('locales'));
     }
 
     /**
@@ -85,9 +85,9 @@ class AttributeController extends MainController
     {
         $attribute = $this->attributeRepository->findOrFail($id);
 
-        $locales = core()->getAllLocales();
+        // $locales = core()->getAllLocales();
 
-        return view('admin::catalog.attributes.edit', compact('attribute', 'locales'));
+        // return view('admin::catalog.attributes.edit', compact('attribute', 'locales'));
     }
 
     /**
