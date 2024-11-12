@@ -30,22 +30,9 @@ class AttributeController extends MainController
      */
     public function index()
     {
-        if (request()->ajax()) {
-            return datagrid(AttributeDataGrid::class)->process();
-        }
+        return response()->json(datagrid(AttributeDataGrid::class)->process());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function create()
-    {
-        // $locales = core()->getAllLocales();
-
-        // return view('admin::catalog.attributes.create', compact('locales'));
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -76,19 +63,6 @@ class AttributeController extends MainController
         return redirect()->route('admin.catalog.attributes.index');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function edit(int $id)
-    {
-        $attribute = $this->attributeRepository->findOrFail($id);
-
-        // $locales = core()->getAllLocales();
-
-        // return view('admin::catalog.attributes.edit', compact('attribute', 'locales'));
-    }
 
     /**
      * Get attribute options associated with attribute.

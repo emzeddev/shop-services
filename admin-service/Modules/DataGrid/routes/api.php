@@ -13,7 +13,3 @@ use Modules\DataGrid\Http\Controllers\DataGridController;
  * is assigned the "api" middleware group. Enjoy building your API!
  *
 */
-
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('datagrid', DataGridController::class)->names('datagrid');
-});

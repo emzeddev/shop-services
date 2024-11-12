@@ -13,7 +13,3 @@ use Modules\Installer\Http\Controllers\InstallerController;
  * is assigned the "api" middleware group. Enjoy building your API!
  *
 */
-
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('installer', InstallerController::class)->names('installer');
-});
