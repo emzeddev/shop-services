@@ -2,10 +2,10 @@
 
 namespace Modules\User\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Modules\User\Http\Controllers\MainController;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class UserController extends MainController
 {
     /**
      * Display a listing of the resource.
@@ -25,10 +25,33 @@ class UserController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store()
     {
-        //
+        $this->validate(request(), [
+            'email'    => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $remember = request('remember');
+
+        if (! auth()->guard('admin')->attempt(request(['email', 'password']), $remember)) {
+            return response()->json([
+                "status" => 404,
+                "message" => trans('user::messages.validation.admin-notfound')
+            ]);
+        }
+
+        if (! auth()->guard('admin')->user()->status) {
+            auth()->guard('admin')->logout();
+
+            return response()->json([
+                "status" => 401,
+                "message" => trans('user::messages.validation.activate-warning')
+            ]);
+        }
     }
 
     /**

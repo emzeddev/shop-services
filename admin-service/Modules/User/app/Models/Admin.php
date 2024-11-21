@@ -11,8 +11,11 @@ use Laravel\Sanctum\HasApiTokens;
 use Modules\User\Emails\ResetPasswordNotification;
 use Modules\User\Contracts\Admin as AdminContract;
 use Modules\User\Database\Factories\AdminFactory;
+use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
 
-class Admin extends Authenticatable implements AdminContract
+
+
+class Admin extends Authenticatable implements AdminContract, JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -119,5 +122,28 @@ class Admin extends Authenticatable implements AdminContract
     protected static function newFactory(): Factory
     {
         return AdminFactory::new();
+    }
+
+
+    // Rest omitted for brevity
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }
