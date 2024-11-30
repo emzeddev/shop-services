@@ -5,6 +5,7 @@ namespace Modules\User\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\JsonResponse;
 
 class GetTokenRequest extends FormRequest
 {
@@ -58,11 +59,10 @@ class GetTokenRequest extends FormRequest
         // گرفتن اولین خطای موجود
         $firstError = collect($validator->errors()->messages())->first();
 
-        $response = response()->json([
-            'status' => 422,
+        $response = new JsonResponse([
             'message' => trans('user::validation.datagiven'), // می‌توانید این پیام را ترجمه کنید.
             'error' => $firstError[0], // فقط اولین پیام خطا
-        ], 422);
+        ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
 
         throw new HttpResponseException($response);
     }

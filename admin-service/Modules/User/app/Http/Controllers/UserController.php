@@ -34,7 +34,7 @@ class UserController extends MainController
         if (! $token) {
             return new JsonResponse([
                 "message" => trans('user::validation.admin-notfound')
-            ] , JsonResponse::HTTP_NOT_FOUND);
+            ] , JsonResponse::HTTP_UNAUTHORIZED);
         }
 
         if (! auth()->guard('admin')->user()->status) {

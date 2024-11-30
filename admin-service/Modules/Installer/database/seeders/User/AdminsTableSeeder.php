@@ -21,7 +21,6 @@ class AdminsTableSeeder extends Seeder
         $defaultLocale = $parameters['default_locale'] ?? config('app.locale');
 
         DB::table('admins')->insert([
-            'id'         => 1,
             'name'       => 'Example',
             'email'      => 'admin@example.com',
             'password'   => bcrypt('admin123'),
