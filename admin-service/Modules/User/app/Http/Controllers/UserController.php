@@ -4,85 +4,94 @@ namespace Modules\User\Http\Controllers;
 
 use Modules\User\Http\Controllers\MainController;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Modules\User\Http\Requests\GetTokenRequest;
+use \App\Http\Middleware\AuthTokenMiddleware;
 
 class UserController extends MainController
 {
+
     /**
-     * Display a listing of the resource.
+     * Create a new AuthController instance.
+     *
+     * @return void
      */
-    public function index()
+    public function __construct()
     {
-        return view('user::index');
+        $this->middleware(AuthTokenMiddleware::class, ['except' => ['getToken']]);
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('user::create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * This method for login action for a admin
      *
      * @return \Illuminate\Http\Response
      */
-    public function store()
+    public function getToken(GetTokenRequest $request): JsonResponse
     {
-        $this->validate(request(), [
-            'email'    => 'required|email',
-            'password' => 'required',
-        ]);
-
         $remember = request('remember');
+        $token = auth()->guard('admin')->attempt(request(['email', 'password']), $remember);
 
-        if (! auth()->guard('admin')->attempt(request(['email', 'password']), $remember)) {
-            return response()->json([
-                "status" => 404,
-                "message" => trans('user::messages.validation.admin-notfound')
-            ]);
+        if (! $token) {
+            return new JsonResponse([
+                "message" => trans('user::validation.admin-notfound')
+            ] , JsonResponse::HTTP_NOT_FOUND);
         }
 
         if (! auth()->guard('admin')->user()->status) {
             auth()->guard('admin')->logout();
 
-            return response()->json([
-                "status" => 401,
-                "message" => trans('user::messages.validation.activate-warning')
-            ]);
+            return new JsonResponse([
+                "message" => trans('user::validation.activate-warning')
+            ] , JsonResponse::HTTP_UNAUTHORIZED);
         }
+
+
+        return new JsonResponse([
+            "message" => trans('user::validation.login-success'),
+            "access_token" => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->guard("admin")->factory()->getTTL() * 60
+        ] , JsonResponse::HTTP_OK);
+    }
+
+
+    /**
+     * This method for logout action for admin
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function unsetToken(Request $request) {
+        auth()->guard('admin')->logout();
+
+        return new JsonResponse([
+            "message" => trans('user::validation.logout-success'),
+        ] , JsonResponse::HTTP_OK);
     }
 
     /**
-     * Show the specified resource.
+     * This method for refresh token of admin
+     *
+     * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
-        return view('user::show');
+    public function refreshToken(Request $request) {
+        return new JsonResponse([
+            "access_token" => auth()->guard("admin")->refresh(),
+            'token_type' => 'bearer',
+            'expires_in' => auth()->guard("admin")->factory()->getTTL() * 60
+        ] , JsonResponse::HTTP_OK);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('user::edit');
-    }
 
     /**
-     * Update the specified resource in storage.
+     * This method for get data of token
+     *
+     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
+    public function getDataOfToken(Request $request) {
+        return new JsonResponse([
+            "user" => auth()->guard("admin")->user(),
+        ] , JsonResponse::HTTP_OK);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
-    }
+
 }

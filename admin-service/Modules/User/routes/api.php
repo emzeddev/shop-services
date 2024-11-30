@@ -16,8 +16,11 @@ Route::group(['prefix' => config('app.admin_url')], function () {
      * Redirect route.
     */
 
-    Route::controller(UserController::class)->prefix('login')->group(function () {
-        Route::post('', 'store')->name('admin.account.store');
+    Route::controller(UserController::class)->prefix('account')->group(function () {
+        Route::post('login', 'getToken')->name('admin.account.login');
+        Route::post('logout', 'unsetToken')->name('admin.account.logout');
+        Route::post('refresh', 'refreshToken')->name('admin.account.refresh');
+        Route::post('data', 'getDataOfToken')->name('admin.account.getdata');
     });
 
     /**
