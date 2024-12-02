@@ -3,7 +3,7 @@
 namespace Modules\User\Tests\Unit;
 
 use Tests\TestCase;
-use Modules\User\Models\Admin;
+use Modules\User\Models\AdminProxy;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 // use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,7 +21,7 @@ class UserTest extends TestCase
     {
         $randomMailString = Str::random(6);
 
-        $user = Admin::factory()->create([
+        $user = AdminProxy::factory()->create([
             'email' => $randomMailString.'@example.com',
             'password' => Hash::make('password123'), // پسورد هشی شده
             "status" => true
@@ -92,6 +92,36 @@ class UserTest extends TestCase
         $response->assertStatus(422);
         $response->assertJson([
             'error' => trans('user::validation.password_required'),
+        ]);
+    }
+
+    public function test_email_structure_for_login()
+    {
+        // ارسال درخواست بدون فیلد پسورد
+        $response = $this->postJson('api/admin/account/login', [
+            'email' => '123',
+            "password" => "password123"
+        ]);
+
+        // بررسی اینکه آیا خطای مربوط به پسورد ارسال می‌شود
+        $response->assertStatus(422);
+        $response->assertJson([
+            'error' => trans('user::validation.email_invalid'),
+        ]);
+    }
+
+    public function test_password_limitation_chracter_for_login()
+    {
+        // ارسال درخواست بدون فیلد پسورد
+        $response = $this->postJson('api/admin/account/login', [
+            'email' => 'email@gmail.com',
+            "password" => "123"
+        ]);
+
+        // بررسی اینکه آیا خطای مربوط به پسورد ارسال می‌شود
+        $response->assertStatus(422);
+        $response->assertJson([
+            'error' => trans('user::validation.password_min' , ["min" => 6]),
         ]);
     }
 }

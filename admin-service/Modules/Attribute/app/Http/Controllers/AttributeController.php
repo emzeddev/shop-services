@@ -10,6 +10,7 @@ use Modules\Attribute\Repositories\AttributeRepository;
 // use Modules\Product\Repositories\ProductRepository;
 use Modules\Attribute\Http\Requests\MassDestroyRequest;
 use Modules\Core\Rules\Code;
+use Modules\Attribute\Http\Requests\AttributeStoreRequest;
 
 class AttributeController extends MainController
 {
@@ -30,7 +31,10 @@ class AttributeController extends MainController
      */
     public function index()
     {
-        return response()->json(datagrid(AttributeDataGrid::class)->process());
+        return new JsonResponse([
+            "status" => 200,
+            "data" => datagrid(AttributeDataGrid::class)->process()
+        ] , JsonResponse::HTTP_OK, [], JSON_PRETTY_PRINT);
     }
 
 
@@ -39,20 +43,13 @@ class AttributeController extends MainController
      *
      * @return \Illuminate\Http\Response
      */
-    public function store()
+    public function store(AttributeStoreRequest $request)
     {
-        $this->validate(request(), [
-            'code'          => ['required', 'not_in:type,attribute_family_id', 'unique:attributes,code', new Code],
-            'admin_name'    => 'required',
-            'type'          => 'required',
-            'default_value' => 'integer',
-        ]);
 
         $requestData = request()->all();
 
         $requestData['default_value'] ??= null;
 
-        Event::dispatch('catalog.attribute.create.before');
 
         $attribute = $this->attributeRepository->create($requestData);
 

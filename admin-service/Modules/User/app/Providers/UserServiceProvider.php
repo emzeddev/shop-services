@@ -8,6 +8,10 @@ use Nwidart\Modules\Traits\PathNamespace;
 use Modules\User\Bouncer;
 use Modules\User\Facades\Bouncer as BouncerFacade;
 use Illuminate\Foundation\AliasLoader;
+use Modules\User\Contracts\Admin as AdminContract;
+use Modules\User\Models\Admin;
+use Modules\User\Contracts\Role as RoleContract;
+use Modules\User\Models\Role;
 
 class UserServiceProvider extends ServiceProvider
 {
@@ -29,6 +33,8 @@ class UserServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+
+        $this->registerModelProxies();
     }
 
     /**
@@ -134,5 +140,18 @@ class UserServiceProvider extends ServiceProvider
         $this->app->singleton('bouncer', function () {
             return new Bouncer;
         });
+    }
+
+    public function registerModelProxies() {
+        $this->app->concord->registerModel(
+            AdminContract::class,
+            Admin::class
+        );
+
+        $this->app->concord->registerModel(
+            RoleContract::class,
+            Role::class
+        );
+
     }
 }
