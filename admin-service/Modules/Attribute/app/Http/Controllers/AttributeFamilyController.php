@@ -9,6 +9,7 @@ use Modules\Attribute\Repositories\AttributeRepository;
 use Illuminate\Http\JsonResponse;
 use Modules\Attribute\DataGrids\AttributeFamilyDataGrid;
 use Modules\Attribute\Http\Requests\AttributeFamilyStoreRequest;
+use Modules\Attribute\Http\Requests\AttributeFamilyUpdateRequest;
 
 class AttributeFamilyController extends Controller
 {
@@ -46,8 +47,7 @@ class AttributeFamilyController extends Controller
         return new JsonResponse([
             "attributeFamily" => $attributeFamily,
             "customAttributes" => $customAttributes
-        ] , JsonResponse::HTTP_OK);
-
+        ] , JsonResponse::HTTP_OK, [], JSON_PRETTY_PRINT);
     }
 
     /**
@@ -66,13 +66,6 @@ class AttributeFamilyController extends Controller
         ] , JsonResponse::HTTP_CREATED);
     }
 
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('attribute::show');
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -92,16 +85,52 @@ class AttributeFamilyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(AttributeFamilyUpdateRequest $request, int $id)
     {
-        //
+        $this->attributeFamilyRepository->update([
+            'attribute_groups' => request('attribute_groups'),
+            'code'             => request('code'),
+            'name'             => request('name'),
+        ], $id);
+
+        return new JsonResponse([
+            "message" => trans("attribute::messages.attribute_family_updated")
+        ] , JsonResponse::HTTP_OK);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
-        //
+        $attributeFamily = $this->attributeFamilyRepository->findOrFail($id);
+
+        if ($this->attributeFamilyRepository->count() == 1) {
+            return new JsonResponse([
+                'message' => trans('attribute::messages.last-delete-error'),
+            ], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        if ($attributeFamily->products()->count()) {
+            return new JsonResponse([
+                'message' => trans('attribute::messages.attribute-product-error'),
+            ], JsonResponse::HTTP_BAD_REQUEST);
+        }
+
+        try {
+
+            $this->attributeFamilyRepository->delete($id);
+
+
+            return new JsonResponse([
+                'message' => trans('attribute::messages.attribute-family-delete-success'),
+            ]);
+        } catch (\Exception $e) {
+            report($e);
+        }
+
+        return new JsonResponse([
+            'message' => trans('admin::messages.attribute-family-delete-failed'),
+        ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

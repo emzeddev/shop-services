@@ -49,7 +49,7 @@ Route::prefix('catalog')->group(function () {
 
         Route::put('edit/{id}', 'update')->name('admin.catalog.families.update');
 
-        Route::delete('edit/{id}', 'destroy')->name('admin.catalog.families.delete');
+        Route::delete('destroy/{id}', 'destroy')->name('admin.catalog.families.delete');
     });
 
 });
