@@ -79,7 +79,7 @@ class AttributeFamilyController extends Controller
         return new JsonResponse([
             "attributeFamily" => $attributeFamily,
             "customAttributes" => $customAttributes
-        ] , JsonResponse::HTTP_OK);
+        ] , JsonResponse::HTTP_OK, [], JSON_PRETTY_PRINT);
     }
 
     /**

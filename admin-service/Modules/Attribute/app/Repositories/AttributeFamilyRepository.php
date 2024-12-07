@@ -45,7 +45,9 @@ class AttributeFamilyRepository extends Repository
 
             unset($group['custom_attributes']);
 
+            
             $attributeGroup = $family->attribute_groups()->create($group);
+            
 
             foreach ($customAttributes as $key => $attribute) {
                 $attributeModel = isset($attribute['id'])
@@ -59,15 +61,19 @@ class AttributeFamilyRepository extends Repository
         return $family;
     }
 
+    // $data['attribute_groups'] مقادیری که داره داخلش کلید هاش باید مقدار آیدیه هر گروه رو بگیره
     /**
      * @param  int  $id
      * @return \Modules\Attribute\Contracts\AttributeFamily
      */
     public function update(array $data, $id)
     {
+
         $family = parent::update($data, $id);
 
         $previousAttributeGroupIds = $family->attribute_groups()->pluck('id');
+        
+
 
         foreach ($data['attribute_groups'] ?? [] as $attributeGroupId => $attributeGroupInputs) {
             if (Str::contains($attributeGroupId, 'group_')) {
@@ -85,6 +91,7 @@ class AttributeFamilyRepository extends Repository
                     ]);
                 }
             } else {
+                
                 if (is_numeric($index = $previousAttributeGroupIds->search($attributeGroupId))) {
                     $previousAttributeGroupIds->forget($index);
                 }
