@@ -88,14 +88,14 @@ class Category extends TranslatableModel implements CategoryContract
      *
      * @return string
      */
-    // public function getUrlAttribute()
-    // {
-    //     if ($categoryTranslation = $this->translate(core()->getCurrentLocale()->code)) {
-    //         return url($categoryTranslation->slug);
-    //     }
+    public function getUrlAttribute()
+    {
+        if ($categoryTranslation = $this->translate(core()->getCurrentLocale()->code)) {
+            return url($categoryTranslation->slug);
+        }
 
-    //     return url($this->translate(core()->getDefaultLocaleCodeFromDefaultChannel())?->slug);
-    // }
+        return url($this->translate(core()->getDefaultLocaleCodeFromDefaultChannel())?->slug);
+    }
 
     /**
      * Get image url for the category image.
@@ -136,14 +136,14 @@ class Category extends TranslatableModel implements CategoryContract
     /**
      * Get fallback locale for category.
      */
-    // protected function getFallbackLocale(?string $locale = null): ?string
-    // {
-    //     if ($fallback = core()->getDefaultLocaleCodeFromDefaultChannel()) {
-    //         return $fallback;
-    //     }
+    protected function getFallbackLocale(?string $locale = null): ?string
+    {
+        if ($fallback = core()->getDefaultLocaleCodeFromDefaultChannel()) {
+            return $fallback;
+        }
 
-    //     return parent::getFallbackLocale();
-    // }
+        return parent::getFallbackLocale();
+    }
 
     /**
      * Create a new factory instance for the model.

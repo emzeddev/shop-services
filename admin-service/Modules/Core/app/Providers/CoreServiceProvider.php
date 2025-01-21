@@ -5,6 +5,7 @@ namespace Modules\Core\Providers;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
+use Modules\Core\Core;
 
 class CoreServiceProvider extends ServiceProvider
 {
@@ -19,12 +20,15 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        include __DIR__.'/../Http/Helpers/helpers.php';
+
         $this->registerCommands();
         $this->registerCommandSchedules();
         $this->registerTranslations();
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        
     }
 
     /**
@@ -35,6 +39,18 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->register(EventServiceProvider::class);
         $this->app->register(RouteServiceProvider::class);
 
+        $this->registerFacades();
+
+    }
+
+    protected function registerFacades(): void
+    {
+
+        $this->app->singleton('core', function () {
+            return app()->make(Core::class);
+        });
+
+       
     }
 
 

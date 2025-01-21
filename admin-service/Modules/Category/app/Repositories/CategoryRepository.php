@@ -12,6 +12,7 @@ use Modules\Core\Eloquent\Repository;
 
 class CategoryRepository extends Repository
 {
+    
     /**
      * Specify model class name.
      */
@@ -76,15 +77,15 @@ class CategoryRepository extends Repository
         ) {
             $model = app()->make($this->model());
 
-            // foreach (core()->getAllLocales() as $locale) {
-            //     foreach ($model->translatedAttributes as $attribute) {
-            //         if (isset($data[$attribute])) {
-            //             $data[$locale->code][$attribute] = $data[$attribute];
+            foreach (core()->getAllLocales() as $locale) {
+                foreach ($model->translatedAttributes as $attribute) {
+                    if (isset($data[$attribute])) {
+                        $data[$locale->code][$attribute] = $data[$attribute];
 
-            //             $data[$locale->code]['locale_id'] = $locale->id;
-            //         }
-            //     }
-            // }
+                        $data[$locale->code]['locale_id'] = $locale->id;
+                    }
+                }
+            }
         }
 
         $category = $this->model->create($data);
@@ -302,22 +303,22 @@ class CategoryRepository extends Repository
      */
     private function setSameAttributeValueToAllLocale(array $data, ...$attributeNames)
     {
-        // $requestedLocale = core()->getRequestedLocaleCode();
+        $requestedLocale = core()->getRequestedLocaleCode();
 
-        // $model = app()->make($this->model());
+        $model = app()->make($this->model());
 
-        // foreach ($attributeNames as $attributeName) {
-        //     foreach (core()->getAllLocales() as $locale) {
-        //         if ($requestedLocale == $locale->code) {
-        //             foreach ($model->translatedAttributes as $attribute) {
-        //                 if ($attribute === $attributeName) {
-        //                     $data[$locale->code][$attribute] = $data[$requestedLocale][$attribute] ?? $data[$data['locale']][$attribute];
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
+        foreach ($attributeNames as $attributeName) {
+            foreach (core()->getAllLocales() as $locale) {
+                if ($requestedLocale == $locale->code) {
+                    foreach ($model->translatedAttributes as $attribute) {
+                        if ($attribute === $attributeName) {
+                            $data[$locale->code][$attribute] = $data[$requestedLocale][$attribute] ?? $data[$data['locale']][$attribute];
+                        }
+                    }
+                }
+            }
+        }
 
-        // return $data;
+        return $data;
     }
 }
