@@ -27,6 +27,7 @@ class CategoryTranslation extends Model implements CategoryTranslationContract
     protected $fillable = [
         'name',
         'description',
+        'url_path',
         'slug',
         'meta_title',
         'meta_description',
