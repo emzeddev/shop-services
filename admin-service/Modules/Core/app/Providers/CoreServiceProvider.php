@@ -7,6 +7,15 @@ use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use Modules\Core\Core;
 
+use Modules\Core\Contracts\Channel as ChannelContract;
+use Modules\Core\Models\Channel;
+
+use Modules\Core\Contracts\Currency as CurrencyContract;
+use Modules\Core\Models\Currency;
+
+use Modules\Core\Contracts\Locale as LocaleContract;
+use Modules\Core\Models\Locale;
+
 class CoreServiceProvider extends ServiceProvider
 {
     use PathNamespace;
@@ -28,7 +37,8 @@ class CoreServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
-        
+        $this->registerModelProxies();
+
     }
 
     /**
@@ -136,5 +146,22 @@ class CoreServiceProvider extends ServiceProvider
         }
 
         return $paths;
+    }
+
+    public function registerModelProxies() {
+        $this->app->concord->registerModel(
+            ChannelContract::class,
+            Channel::class
+        );
+
+        $this->app->concord->registerModel(
+            CurrencyContract::class,
+            Currency::class
+        );
+
+        $this->app->concord->registerModel(
+            LocaleContract::class,
+            Locale::class
+        );
     }
 }
