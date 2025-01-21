@@ -111,11 +111,11 @@ class AttributeFamilyController extends Controller
             ], JsonResponse::HTTP_BAD_REQUEST);
         }
 
-        if ($attributeFamily->products()->count()) {
-            return new JsonResponse([
-                'message' => trans('attribute::messages.attribute-product-error'),
-            ], JsonResponse::HTTP_BAD_REQUEST);
-        }
+        // if ($attributeFamily->products()->count()) {
+        //     return new JsonResponse([
+        //         'message' => trans('attribute::messages.attribute-product-error'),
+        //     ], JsonResponse::HTTP_BAD_REQUEST);
+        // }
 
         try {
 
@@ -124,7 +124,7 @@ class AttributeFamilyController extends Controller
 
             return new JsonResponse([
                 'message' => trans('attribute::messages.attribute-family-delete-success'),
-            ]);
+            ] , JsonResponse::HTTP_OK);
         } catch (\Exception $e) {
             report($e);
         }

@@ -51,13 +51,14 @@ class AttributeController extends MainController
         $requestData['default_value'] ??= null;
 
 
-        $attribute = $this->attributeRepository->create($requestData);
+        $this->attributeRepository->create($requestData);
 
-        Event::dispatch('catalog.attribute.create.after', $attribute);
+        // Event::dispatch('catalog.attribute.create.after', $attribute);
 
-        session()->flash('success', trans('admin::app.catalog.attributes.create-success'));
 
-        return redirect()->route('admin.catalog.attributes.index');
+        return new JsonResponse([
+            "message" => trans("attribute::messages.attribute_created")
+        ] , JsonResponse::HTTP_CREATED);
     }
 
 
@@ -70,7 +71,10 @@ class AttributeController extends MainController
     {
         $attribute = $this->attributeRepository->findOrFail($id);
 
-        return $attribute->options()->orderBy('sort_order')->get();
+
+        return new JsonResponse([
+            "data" => $attribute->options()->orderBy('sort_order')->get()
+        ] , JsonResponse::HTTP_OK);
     }
 
     /**
@@ -93,15 +97,13 @@ class AttributeController extends MainController
             $requestData['default_value'] = null;
         }
 
-        Event::dispatch('catalog.attribute.update.before', $id);
+        $this->attributeRepository->update($requestData, $id);
 
-        $attribute = $this->attributeRepository->update($requestData, $id);
 
-        Event::dispatch('catalog.attribute.update.after', $attribute);
+        return new JsonResponse([
+            "message" => trans("attribute::messages.attribute_updated")
+        ] , JsonResponse::HTTP_OK);
 
-        session()->flash('success', trans('admin::app.catalog.attributes.update-success'));
-
-        return redirect()->route('admin.catalog.attributes.index');
     }
 
     /**

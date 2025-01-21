@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Attribute\Database\Factories\AttributeFactory;
 use Modules\Attribute\Contracts\Attribute as AttributeContract;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Attribute extends Model implements AttributeContract
 {
@@ -34,6 +35,16 @@ class Attribute extends Model implements AttributeContract
         'swatch_type',
         'is_comparable',
     ];
+
+
+    /**
+     * Get the options.
+     */
+    public function options(): HasMany
+    {
+        return $this->hasMany(AttributeOptionProxy::modelClass());
+    }
+
 
     protected static function newFactory(): AttributeFactory
     {

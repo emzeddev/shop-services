@@ -7,6 +7,8 @@
     "require": {
         "php": "^8.2",
         "astrotomic/laravel-translatable": "^11.15",
+        "intervention/image": "^2.7",
+        "kalnoy/nestedset": "^6.0",
         "konekt/concord": "^1.15",
         "laravel/framework": "^11.9",
         "laravel/sanctum": "^4.0",
@@ -14,7 +16,8 @@
         "maatwebsite/excel": "^3.1",
         "nwidart/laravel-modules": "^11.1",
         "php-open-source-saver/jwt-auth": "^2.7",
-        "prettus/l5-repository": "^2.9"
+        "prettus/l5-repository": "^2.9",
+        "shetabit/visitor": "^4.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

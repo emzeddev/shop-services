@@ -3,5 +3,6 @@
     "Core": true,
     "Installer": true,
     "DataGrid": true,
-    "User": true
+    "User": true,
+    "Category": true
 }
