@@ -37,6 +37,13 @@ class Core
 
 
 
+    /**
+     * Current Channel.
+     *
+     * @var \Webkul\Core\Models\Channel
+     */
+    protected $currentChannel;
+
 
     /**
      * Return all locales.
@@ -114,5 +121,49 @@ class Core
         }
 
         return $this->defaultChannel = $this->channelRepository->first();
+    }
+
+    /**
+     * Get channel code from request.
+     *
+     * @return \Webkul\Core\Contracts\Channel
+     */
+    public function getRequestedChannel()
+    {
+        $code = request()->query('channel');
+
+        if ($code) {
+            return $this->channelRepository->findOneByField('code', $code);
+        }
+
+        return $this->getCurrentChannel();
+    }
+
+    /**
+     * Returns current channel models.
+     *
+     * @return \Webkul\Core\Contracts\Channel
+     */
+    public function getCurrentChannel(?string $hostname = null)
+    {
+        if (! $hostname) {
+            $hostname = request()->getHttpHost();
+        }
+
+        if ($this->currentChannel) {
+            return $this->currentChannel;
+        }
+
+        $this->currentChannel = $this->channelRepository->findWhereIn('hostname', [
+            $hostname,
+            'http://'.$hostname,
+            'https://'.$hostname,
+        ])->first();
+
+        if (! $this->currentChannel) {
+            $this->currentChannel = $this->channelRepository->first();
+        }
+
+        return $this->currentChannel;
     }
 }
