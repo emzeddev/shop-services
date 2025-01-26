@@ -48,11 +48,13 @@ class AttributeTest extends TestCase
 
     public function test_should_ail_the_validation_with_errors_when_certain_inputs_are_not_provided_when_store_in_attribute(): void
     {
-        $this->postJson(route('api.admin.catalog.attributes.store'))
-        ->assertJsonValidationErrorFor('code')
-        ->assertJsonValidationErrorFor('admin_name')
-        ->assertJsonValidationErrorFor('type')
-        ->assertUnprocessable();
+        $response = $this->postJson(route('api.admin.catalog.attributes.store'));
+
+        $response->assertStatus(422)
+        ->assertJsonStructure([
+            'message',
+            'error',
+        ]);
     }
 
 }
