@@ -33,12 +33,19 @@ class CategoryDataGrid extends DataGrid
             ->leftJoin('category_translations', 'categories.id', '=', 'category_translations.category_id')
             ->leftJoin('product_categories', 'categories.id', '=', 'product_categories.category_id')
             ->where('category_translations.locale', app()->getLocale())
-            ->groupBy('categories.id');
+            ->groupBy(
+                'categories.id',
+                'category_translations.name',
+                'categories.position',
+                'categories.status',
+                'category_translations.locale'
+            ); // اضافه کردن تمام ستون‌های select به groupBy
 
         $this->addFilter('category_id', 'categories.id');
 
         return $queryBuilder;
     }
+
 
     /**
      * Add columns.
@@ -49,7 +56,7 @@ class CategoryDataGrid extends DataGrid
     {
         $this->addColumn([
             'index'      => 'category_id',
-            'label'      => trans('admin::app.catalog.categories.index.datagrid.id'),
+            'label'      => trans('category::app.catalog.categories.index.datagrid.id'),
             'type'       => 'integer',
             'filterable' => true,
             'sortable'   => true,
@@ -57,7 +64,7 @@ class CategoryDataGrid extends DataGrid
 
         $this->addColumn([
             'index'      => 'name',
-            'label'      => trans('admin::app.catalog.categories.index.datagrid.name'),
+            'label'      => trans('category::app.catalog.categories.index.datagrid.name'),
             'type'       => 'string',
             'searchable' => true,
             'filterable' => true,
@@ -66,7 +73,7 @@ class CategoryDataGrid extends DataGrid
 
         $this->addColumn([
             'index'      => 'position',
-            'label'      => trans('admin::app.catalog.categories.index.datagrid.position'),
+            'label'      => trans('category::app.catalog.categories.index.datagrid.position'),
             'type'       => 'integer',
             'filterable' => true,
             'sortable'   => true,
@@ -74,22 +81,22 @@ class CategoryDataGrid extends DataGrid
 
         $this->addColumn([
             'index'      => 'status',
-            'label'      => trans('admin::app.catalog.categories.index.datagrid.status'),
+            'label'      => trans('category::app.catalog.categories.index.datagrid.status'),
             'type'       => 'boolean',
             'filterable' => true,
             'sortable'   => true,
             'closure'    => function ($value) {
                 if ($value->status) {
-                    return '<span class="badge badge-md badge-success">'.trans('admin::app.catalog.categories.index.datagrid.active').'</span>';
+                    return '<span class="badge badge-md badge-success">'.trans('category::app.catalog.categories.index.datagrid.active').'</span>';
                 }
 
-                return '<span class="badge badge-md badge-danger">'.trans('admin::app.catalog.categories.index.datagrid.inactive').'</span>';
+                return '<span class="badge badge-md badge-danger">'.trans('category::app.catalog.categories.index.datagrid.inactive').'</span>';
             },
         ]);
 
         $this->addColumn([
             'index'      => 'count',
-            'label'      => trans('admin::app.catalog.categories.index.datagrid.no-of-products'),
+            'label'      => trans('category::app.catalog.categories.index.datagrid.no-of-products'),
             'type'       => 'integer',
             'sortable'   => true,
         ]);
@@ -105,7 +112,7 @@ class CategoryDataGrid extends DataGrid
         if (bouncer()->hasPermission('catalog.categories.edit')) {
             $this->addAction([
                 'icon'   => 'icon-edit',
-                'title'  => trans('admin::app.catalog.categories.index.datagrid.edit'),
+                'title'  => trans('category::app.catalog.categories.index.datagrid.edit'),
                 'method' => 'GET',
                 'url'    => function ($row) {
                     return route('admin.catalog.categories.edit', $row->category_id);
@@ -116,7 +123,7 @@ class CategoryDataGrid extends DataGrid
         if (bouncer()->hasPermission('catalog.categories.delete')) {
             $this->addAction([
                 'icon'   => 'icon-delete',
-                'title'  => trans('admin::app.catalog.categories.index.datagrid.delete'),
+                'title'  => trans('category::app.catalog.categories.index.datagrid.delete'),
                 'method' => 'DELETE',
                 'url'    => function ($row) {
                     return route('admin.catalog.categories.delete', $row->category_id);
@@ -126,7 +133,7 @@ class CategoryDataGrid extends DataGrid
 
         if (bouncer()->hasPermission('catalog.categories.delete')) {
             $this->addMassAction([
-                'title'  => trans('admin::app.catalog.categories.index.datagrid.delete'),
+                'title'  => trans('category::app.catalog.categories.index.datagrid.delete'),
                 'method' => 'POST',
                 'url'    => route('admin.catalog.categories.mass_delete'),
             ]);
@@ -134,15 +141,15 @@ class CategoryDataGrid extends DataGrid
 
         if (bouncer()->hasPermission('catalog.categories.edit')) {
             $this->addMassAction([
-                'title'   => trans('admin::app.catalog.categories.index.datagrid.update-status'),
+                'title'   => trans('category::app.catalog.categories.index.datagrid.update-status'),
                 'method'  => 'POST',
                 'url'     => route('admin.catalog.categories.mass_update'),
                 'options' => [
                     [
-                        'label' => trans('admin::app.catalog.categories.index.datagrid.active'),
+                        'label' => trans('category::app.catalog.categories.index.datagrid.active'),
                         'value' => 1,
                     ], [
-                        'label' => trans('admin::app.catalog.categories.index.datagrid.inactive'),
+                        'label' => trans('category::app.catalog.categories.index.datagrid.inactive'),
                         'value' => 0,
                     ],
                 ],

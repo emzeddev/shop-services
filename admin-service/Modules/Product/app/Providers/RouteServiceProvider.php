@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\Category\Providers;
+namespace Modules\Product\Providers;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    protected string $name = 'Category';
+    protected string $name = 'Product';
 
     /**
      * Called before routes are registered.
@@ -17,7 +17,6 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(): void
     {
         parent::boot();
-        // $this->loadRoutesFrom(module_path('Category', 'routes/api.php'));
     }
 
     /**
