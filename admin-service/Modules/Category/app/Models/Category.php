@@ -2,7 +2,7 @@
 
 namespace Modules\Category\Models;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Storage;
@@ -10,7 +10,7 @@ use Kalnoy\Nestedset\NodeTrait;
 use Shetabit\Visitor\Traits\Visitable;
 use Modules\Attribute\Models\AttributeProxy;
 use Modules\Category\Contracts\Category as CategoryContract;
-use Modules\Category\Database\Factories\CategoryFactory;
+use Modules\Category\Database\Factories\CategoriesFactory;
 use Modules\Core\Eloquent\TranslatableModel;
 // use Webkul\Product\Models\ProductProxy;
 
@@ -148,8 +148,8 @@ class Category extends TranslatableModel implements CategoryContract
     /**
      * Create a new factory instance for the model.
      */
-    protected static function newFactory(): Factory
+    protected static function newFactory(): CategoriesFactory
     {
-        return CategoryFactory::new();
+        return CategoriesFactory::new();
     }
 }

@@ -12,6 +12,8 @@ use Modules\Category\Models\Category;
 use Modules\Category\Contracts\CategoryTranslation as CategoryTranslationContract;
 use Modules\Category\Models\CategoryTranslation;
 
+
+
 class CategoryServiceProvider extends ServiceProvider
 {
     use PathNamespace;
@@ -34,6 +36,7 @@ class CategoryServiceProvider extends ServiceProvider
 
         $this->registerModelProxies();
     }
+
 
     /**
      * Register the service provider.
