@@ -1,97 +1,76 @@
 <?php
 
-namespace Modules\User\Http\Controllers;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Category\Models\Category;
+use Modules\Category\Database\factories\CategoryFactory;
+use Illuminate\Http\UploadedFile;
+use Tests\TestCase;
 
-use Modules\User\Http\Controllers\MainController;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Modules\User\Http\Requests\GetTokenRequest;
-use \App\Http\Middleware\AuthTokenMiddleware;
-
-class UserController extends MainController
+class CategoryTest extends TestCase
 {
+    // use RefreshDatabase;
 
-    /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function test_user_can_view_categories()
     {
-        $this->middleware(AuthTokenMiddleware::class, ['except' => ['getToken']]);
+        // dd(Category::all());
+        Category::factory()->count(3)->create();
+
+        $response = $this->getJson(route('api.admin.catalog.categories.index'));
+dd($response);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'status',
+                'data',
+            ]);
     }
 
-    /**
-     * This method for login action for a admin
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getToken(GetTokenRequest $request): JsonResponse
-    {
-        $remember = request('remember');
-        $token = auth()->guard('admin')->attempt(request(['email', 'password']), $remember);
+    // public function test_user_can_create_category()
+    // {
+    //     $data = [
+    //         'name' => 'Test Category',
+    //         'image' => UploadedFile::fake()->image('category.jpg')
+    //     ];
 
-        if (! $token) {
-            return new JsonResponse([
-                "message" => trans('user::validation.admin-notfound')
-            ] , JsonResponse::HTTP_UNAUTHORIZED);
-        }
+    //     $response = $this->post('/categories', $data);
 
-        if (! auth()->guard('admin')->user()->status) {
-            auth()->guard('admin')->logout();
+    //     $response->assertStatus(201);
+    //     $this->assertDatabaseHas('categories', ['name' => 'Test Category']);
+    // }
 
-            return new JsonResponse([
-                "message" => trans('user::validation.activate-warning')
-            ] , JsonResponse::HTTP_UNAUTHORIZED);
-        }
+    // public function test_name_is_required_to_create_category()
+    // {
+    //     $response = $this->post('/categories', ['name' => '']);
 
+    //     $response->assertSessionHasErrors('name');
+    // }
 
-        return new JsonResponse([
-            "message" => trans('user::validation.login-success'),
-            "access_token" => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->guard("admin")->factory()->getTTL() * 60
-        ] , JsonResponse::HTTP_OK);
-    }
+    // public function test_image_is_required_to_create_category()
+    // {
+    //     $response = $this->post('/categories', ['name' => 'Valid Name']);
 
+    //     $response->assertSessionHasErrors('image');
+    // }
 
-    /**
-     * This method for logout action for admin
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function unsetToken(Request $request) {
-        auth()->guard('admin')->logout();
+    // public function test_user_can_update_category()
+    // {
+    //     $category = Category::factory()->create();
 
-        return new JsonResponse([
-            "message" => trans('user::validation.logout-success'),
-        ] , JsonResponse::HTTP_OK);
-    }
+    //     $data = ['name' => 'Updated Name'];
 
-    /**
-     * This method for refresh token of admin
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function refreshToken(Request $request) {
-        return new JsonResponse([
-            "access_token" => auth()->guard("admin")->refresh(),
-            'token_type' => 'bearer',
-            'expires_in' => auth()->guard("admin")->factory()->getTTL() * 60
-        ] , JsonResponse::HTTP_OK);
-    }
+    //     $response = $this->put("/categories/{$category->id}", $data);
 
+    //     $response->assertStatus(200);
+    //     $this->assertDatabaseHas('categories', ['name' => 'Updated Name']);
+    // }
 
-    /**
-     * This method for get data of token
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getDataOfToken(Request $request) {
-        return new JsonResponse([
-            "user" => auth()->guard("admin")->user(),
-        ] , JsonResponse::HTTP_OK);
-    }
+    // public function test_user_can_delete_category()
+    // {
+    //     $category = Category::factory()->create();
 
+    //     $response = $this->delete("/categories/{$category->id}");
 
+    //     $response->assertStatus(200);
+    //     $this->assertDatabaseMissing('categories', ['id' => $category->id]);
+    // }
 }
+
