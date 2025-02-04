@@ -30,7 +30,7 @@ class CategoriesFactory extends Factory
         return [
             'status'    => 1,
             'position'  => $this->faker->randomDigit(),
-            'parent_id' => 1,
+            'parent_id' => null,
         ];
     }
 

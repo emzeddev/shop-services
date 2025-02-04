@@ -13,7 +13,11 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'default_country' => null,
+    'currency' => env('APP_CURRENCY', 'USD'),
+    'channel' => 'default',
+
+    'name' => env('APP_NAME', 'shop'),
 
     /*
     |--------------------------------------------------------------------------

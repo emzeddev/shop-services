@@ -7,9 +7,9 @@
     <testsuites>
         <testsuite name="Unit">
             <directory>tests/Unit</directory>
-            <directory>Modules/User/tests/Unit</directory>
-            <directory>Modules/Attribute/tests/Unit</directory>
-            <!-- <directory>Modules/Category/tests/Unit</directory> -->
+            <!-- <directory>Modules/User/tests/Unit</directory>
+            <directory>Modules/Attribute/tests/Unit</directory> -->
+            <directory>Modules/Category/tests/Unit</directory>
         </testsuite>
         <testsuite name="Feature">
             <directory>tests/Feature</directory>

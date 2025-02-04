@@ -50,7 +50,7 @@ class AttributeFamilyTest extends TestCase
 
     public function test_can_get_attribute_families_for_edit_page(): void
     {
-        $response = $this->getJson(route('api.admin.catalog.families.edit' , ['id' => 1]));
+        $response = $this->getJson(route('api.admin.catalog.families.edit' , ['id' => 30]));
 
         $response->assertStatus(200)
             ->assertJsonStructure([

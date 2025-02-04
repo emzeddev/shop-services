@@ -78,11 +78,11 @@ class Core
      * Returns current locale.
      *
      * @return \Webkul\Core\Contracts\Locale
-     */
+    */
     public function getCurrentLocale()
     {
         if ($this->currentLocale) {
-            return $this->currentLocale;
+           return $this->currentLocale;
         }
 
         $this->currentLocale = $this->localeRepository->findOneByField('code', app()->getLocale());
@@ -96,7 +96,7 @@ class Core
 
     /**
      * Returns default locale code from default channel.
-     */
+    */
     public function getDefaultLocaleCodeFromDefaultChannel(): string
     {
         return $this->getDefaultChannel()->default_locale->code;

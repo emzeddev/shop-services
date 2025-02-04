@@ -7,9 +7,9 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libfreetype6-dev \
     libzip-dev \
-    unzip \
     libpq-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    libwebp-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \  
     && docker-php-ext-install gd zip pdo pdo_pgsql
 
 # Set the working directory
