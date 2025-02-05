@@ -13,7 +13,6 @@ class CategoryTest extends TestCase
 {
     public function test_user_can_view_categories()
     {
-        // dd(Category::all());
         // Category::factory()->count(3)->create();
 
         $response = $this->getJson(route('api.admin.catalog.categories.index'));
@@ -80,18 +79,143 @@ class CategoryTest extends TestCase
         // ارسال درخواست و بررسی ریدایرکت
         $response = $this->postJson(route('api.admin.catalog.categories.store'), $data);
 
-        dd($response);
+        // dd($response);
         $response->assertStatus(201)
         ->assertJsonStructure([
-            'status',
-            'data',
+            'message',
+            'category',
         ]);
 
-        // $this->assertDatabaseHas('category_translations', [
-        //     'slug'        => $data['slug'],
-        //     'name'        => $data['name'],
-        //     'description' => $data['description'],
-        // ]);
     }
+
+
+    public function test_admin_cannot_create_category_without_required_fields()
+    {
+        $response = $this->postJson(route('api.admin.catalog.categories.store'));
+
+        $response->assertStatus(422)
+        ->assertJsonStructure([
+            'message',
+            'error',
+        ]);
+    }
+
+
+
+    public function test_admin_can_mass_update_categories()
+    {
+        // آماده‌سازی داده‌ها: ایجاد ۵ دسته‌بندی تستی
+        $categories = Category::factory()->count(5)->create();
+
+
+        // ارسال درخواست برای بروزرسانی گروهی
+        $response = $this->postJson(route('api.admin.catalog.categories.mass_update'), [
+            'indices' => $categories->pluck('id')->toArray(),
+            'value'   => 1,
+        ]);
+
+        // بررسی پاسخ موفق
+        $response->assertOk()
+         ->assertSeeText(trans('category::messages.update-success'));
+            
+
+        // بررسی دیتابیس که مقدار status برای همه‌ی دسته‌ها برابر ۱ شده باشد
+        foreach ($categories as $category) {
+            $this->assertDatabaseHas('categories', [
+                'id'     => $category->id,
+                'status' => 1,
+            ]);
+        }
+    }
+
+
+    public function test_admin_can_mass_delete_categories()
+    {
+        // آماده‌سازی داده‌ها: ایجاد ۵ دسته‌بندی تستی
+        $categories = Category::factory()->count(5)->create();
+
+
+        // ارسال درخواست برای حذف گروهی دسته‌بندی‌ها
+        $response = $this->postJson(route('api.admin.catalog.categories.mass_delete'), [
+            'indices' => $categories->pluck('id')->toArray(),
+        ]);
+
+        // بررسی پاسخ موفق
+        $response->assertOk()
+            ->assertSeeText(trans('category::messages.delete-success'));
+
+        // بررسی دیتابیس که دسته‌ها حذف شده باشند
+        foreach ($categories as $category) {
+            $this->assertDatabaseMissing('categories', [
+                'id' => $category->id,
+            ]);
+        }
+    }
+
+
+    public function test_admin_can_delete_a_category()
+    {
+        // آماده‌سازی داده‌ها: ایجاد یک دسته‌بندی تستی
+        $category = Category::factory()->create();
+
+        // ارسال درخواست حذف
+        $response = $this->deleteJson(route('api.admin.catalog.categories.delete', $category->id));
+
+        // بررسی موفق بودن پاسخ
+        $response->assertOk()
+            ->assertSeeText(trans('category::messages.delete-success'));
+
+        // بررسی اینکه دسته‌بندی از دیتابیس حذف شده باشد
+        $this->assertDatabaseMissing('categories', [
+            'id' => $category->id,
+        ]);
+    }
+
+
+    public function test_admin_can_update_a_category()
+    {
+        // آماده‌سازی داده‌ها: ایجاد یک دسته‌بندی تستی
+        $category = Category::factory()->create();
+        
+        // دریافت ویژگی‌های قابل فیلتر شدن
+        $attributes = Attribute::where('is_filterable', 1)->pluck('id')->toArray();
+
+        // داده‌های جدید برای به‌روزرسانی
+        $data = [
+            'name'        => fake()->name(),
+            'description' => substr(fake()->paragraph(), 0, 50),
+            'slug'        => fake()->slug(),
+        ];
+
+
+
+        // ارسال درخواست PUT برای به‌روزرسانی دسته‌بندی
+        $response = $this->putJson(route('api.admin.catalog.categories.update', $category->id), [
+            'fa'          => $data,
+            'locale'      => config('app.locale'),
+            'attributes'  => $attributes,
+            'position'    => rand(1, 5),
+            'logo_path'   => [
+                UploadedFile::fake()->image('logo.png'),
+            ],
+            'banner_path' => [
+                UploadedFile::fake()->image('banner.png'),
+            ],
+        ]);
+
+        // dd($response);
+
+        $response->assertStatus(200)
+        ->assertJsonStructure([
+            'message',
+            'category',
+        ]);
+
+    }
+
+
+
+
+
 
 }

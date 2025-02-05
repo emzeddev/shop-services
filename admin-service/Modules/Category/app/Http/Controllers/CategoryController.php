@@ -203,7 +203,7 @@ class CategoryController extends Controller
             || $suppressFlash == true
         ) {
             return new JsonResponse([
-                'message' => trans('admin::app.catalog.categories.delete-success'),
+                'message' => trans('category::messages.delete-success'),
             ]);
         }
 

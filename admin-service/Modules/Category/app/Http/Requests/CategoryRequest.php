@@ -60,23 +60,23 @@ class CategoryRequest extends FormRequest
         $locale = core()->getRequestedLocaleCode();
 
         return [
-            'position.required'       => __('validation.position_required'),
-            'logo_path.array'         => __('validation.logo_path_array'),
-            'logo_path.*.mimes'       => __('validation.logo_invalid_format'),
-            'banner_path.array'       => __('validation.banner_path_array'),
-            'banner_path.*.mimes'     => __('validation.banner_invalid_format'),
-            'attributes.required'     => __('validation.attributes_required'),
-            'attributes.*.required'   => __('validation.each_attribute_required'),
+            'position.required'       => __('category::validations.position_required'),
+            'logo_path.array'         => __('category::validations.logo_path_array'),
+            'logo_path.*.mimes'       => __('category::validations.logo_invalid_format'),
+            'banner_path.array'       => __('category::validations.banner_path_array'),
+            'banner_path.*.mimes'     => __('category::validations.banner_invalid_format'),
+            'attributes.required'     => __('category::validations.attributes_required'),
+            'attributes.*.required'   => __('category::validations.each_attribute_required'),
 
             // پیام‌های اعتبارسنجی مربوط به locale
-            "{$locale}.slug.required" => __('category::app.validations.slug_required'),
-            "{$locale}.name.required" => __('category::app.validations.name_required'),
-            "{$locale}.description.required_if" => __('category::app.validations.description_required_if'),
+            "{$locale}.slug.required" => __('category::validations.slug_required'),
+            "{$locale}.name.required" => __('category::validations.name_required'),
+            "{$locale}.description.required_if" => __('category::validations.description_required_if'),
 
             // پیام‌های عمومی
-            'slug.required'           => __('category::app.validations.slug_required'),
-            'name.required'           => __('category::app.validations.name_required'),
-            'description.required_if' => __('category::app.validations.description_required_if'),
+            'slug.required'           => __('category::validations.slug_required'),
+            'name.required'           => __('category::validations.name_required'),
+            'description.required_if' => __('category::validations.description_required_if'),
         ];
     }
 
@@ -101,7 +101,7 @@ class CategoryRequest extends FormRequest
         $firstError = collect($validator->errors()->messages())->first();
 
         $response = new JsonResponse([
-            'message' => trans('category::validation.datagiven'), // می‌توانید این پیام را ترجمه کنید.
+            'message' => __('category::validations.datagiven'), // می‌توانید این پیام را ترجمه کنید.
             'error' => $firstError[0], // فقط اولین پیام خطا
         ], JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
 

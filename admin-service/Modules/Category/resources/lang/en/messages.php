@@ -7,4 +7,5 @@ return [
     'delete-category-success'       => 'The category has been successfully deleted.',
     'delete-category-failed'        => 'Error encountered while deleting category',
     'update-success'                => 'category updated successfully.',
+    'delete-success'                => 'category deleted successfully.',
 ];
