@@ -16,6 +16,30 @@ use Modules\Core\Models\Currency;
 use Modules\Core\Contracts\Locale as LocaleContract;
 use Modules\Core\Models\Locale;
 
+use Modules\Core\Contracts\Address as AddressContract;
+use Modules\Core\Models\Address;
+
+use Modules\Core\Contracts\CoreConfig as CoreConfigContract;
+use Modules\Core\Models\CoreConfig;
+
+use Modules\Core\Contracts\Country as CountryContract;
+use Modules\Core\Models\Country;
+
+use Modules\Core\Contracts\CountryState as CountryStateContract;
+use Modules\Core\Models\CountryState;
+
+use Modules\Core\Contracts\CountryStateTranslation as CountryStateTranslationContract;
+use Modules\Core\Models\CountryStateTranslation;
+
+use Modules\Core\Contracts\CurrencyExchangeRate as CurrencyExchangeRateContract;
+use Modules\Core\Models\CurrencyExchangeRate;
+
+use Modules\Core\Contracts\SubscribersList as SubscribersListContract;
+use Modules\Core\Models\SubscribersList;
+
+use Modules\Core\Contracts\Visit as VisitContract;
+use Modules\Core\Models\Visit;
+
 class CoreServiceProvider extends ServiceProvider
 {
     use PathNamespace;
@@ -162,6 +186,46 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->concord->registerModel(
             LocaleContract::class,
             Locale::class
+        );
+
+        $this->app->concord->registerModel(
+            AddressContract::class,
+            Address::class
+        );
+
+        $this->app->concord->registerModel(
+            CoreConfigContract::class,
+            CoreConfig::class
+        );
+
+        $this->app->concord->registerModel(
+            CountryContract::class,
+            Country::class
+        );
+
+        $this->app->concord->registerModel(
+            CountryStateContract::class,
+            CountryState::class
+        );
+
+        $this->app->concord->registerModel(
+            CountryStateTranslationContract::class,
+            CountryStateTranslation::class
+        );
+
+        $this->app->concord->registerModel(
+            CurrencyExchangeRateContract::class,
+            CurrencyExchangeRate::class
+        );
+
+        $this->app->concord->registerModel(
+            SubscribersListContract::class,
+            SubscribersList::class
+        );
+
+        $this->app->concord->registerModel(
+            VisitContract::class,
+            Visit::class
         );
     }
 }

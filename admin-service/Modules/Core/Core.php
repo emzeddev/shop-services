@@ -23,7 +23,7 @@ class Core
     /**
      * Current Locale.
      *
-     * @var \Webkul\Core\Models\Locale
+     * @var \Modules\Core\Models\Locale
      */
     protected $currentLocale;
 
@@ -31,7 +31,7 @@ class Core
     /**
      * Default Channel.
      *
-     * @var \Webkul\Core\Models\Channel
+     * @var \Modules\Core\Models\Channel
      */
     protected $defaultChannel;
 
@@ -40,7 +40,7 @@ class Core
     /**
      * Current Channel.
      *
-     * @var \Webkul\Core\Models\Channel
+     * @var \Modules\Core\Models\Channel
      */
     protected $currentChannel;
 
@@ -77,7 +77,7 @@ class Core
     /**
      * Returns current locale.
      *
-     * @return \Webkul\Core\Contracts\Locale
+     * @return \Modules\Core\Contracts\Locale
     */
     public function getCurrentLocale()
     {
@@ -106,7 +106,7 @@ class Core
     /**
      * Returns default channel models.
      *
-     * @return \Webkul\Core\Contracts\Channel
+     * @return \Modules\Core\Contracts\Channel
      */
     public function getDefaultChannel(): ?Channel
     {
@@ -126,7 +126,7 @@ class Core
     /**
      * Get channel code from request.
      *
-     * @return \Webkul\Core\Contracts\Channel
+     * @return \Modules\Core\Contracts\Channel
      */
     public function getRequestedChannel()
     {
@@ -140,9 +140,19 @@ class Core
     }
 
     /**
+     * Returns current channel code.
+     *
+     * @return \Modules\Core\Contracts\Channel
+    */
+    public function getCurrentChannelCode(): string
+    {
+        return $this->getCurrentChannel()?->code;
+    }
+
+    /**
      * Returns current channel models.
      *
-     * @return \Webkul\Core\Contracts\Channel
+     * @return \Modules\Core\Contracts\Channel
      */
     public function getCurrentChannel(?string $hostname = null)
     {
@@ -166,4 +176,9 @@ class Core
 
         return $this->currentChannel;
     }
+
+
+    
+
+
 }

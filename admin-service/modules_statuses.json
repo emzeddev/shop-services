@@ -5,5 +5,8 @@
     "DataGrid": true,
     "User": true,
     "Category": true,
-    "Product": true
+    "Product": true,
+    "Inventory": true,
+    "Customer": true,
+    "Sales": true
 }
