@@ -2,21 +2,6 @@
 
 namespace Modules\Product\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Modules\Product\Database\Factories\ProductProxyFactory;
+use Konekt\Concord\Proxies\ModelProxy;
 
-class ProductProxy extends Model
-{
-    use HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     */
-    protected $fillable = [];
-
-    // protected static function newFactory(): ProductProxyFactory
-    // {
-    //     // return ProductProxyFactory::new();
-    // }
-}
+class ProductProxy extends ModelProxy {}

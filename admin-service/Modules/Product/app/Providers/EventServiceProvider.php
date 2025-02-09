@@ -11,7 +11,31 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array<string, array<int, string>>
      */
-    protected $listen = [];
+    /**
+     * The event handler mappings for the application.
+     *
+     * @var array
+     */
+    protected $listen = [
+        'catalog.product.create.after'  => [
+            'Modules\Product\Listeners\Product@afterCreate',
+        ],
+        'catalog.product.update.after'  => [
+            'Modules\Product\Listeners\Product@afterUpdate',
+        ],
+        'catalog.product.delete.before' => [
+            'Modules\Product\Listeners\Product@beforeDelete',
+        ],
+        'checkout.order.save.after'     => [
+            'Modules\Product\Listeners\Order@afterCancelOrCreate',
+        ],
+        'sales.order.cancel.after'      => [
+            'Modules\Product\Listeners\Order@afterCancelOrCreate',
+        ],
+        'sales.refund.save.after'       => [
+            'Modules\Product\Listeners\Refund@afterCreate',
+        ],
+    ];
 
     /**
      * Indicates if events should be discovered.

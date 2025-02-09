@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use Modules\Core\Core;
+use Modules\Core\Facades\SystemConfig as SystemConfigFacade;
 
 use Modules\Core\Contracts\Channel as ChannelContract;
 use Modules\Core\Models\Channel;
@@ -83,6 +84,12 @@ class CoreServiceProvider extends ServiceProvider
         $this->app->singleton('core', function () {
             return app()->make(Core::class);
         });
+
+        $this->app->singleton('system_config', function () {
+            return app()->make(SystemConfigFacade::class);
+        });
+
+
 
        
     }

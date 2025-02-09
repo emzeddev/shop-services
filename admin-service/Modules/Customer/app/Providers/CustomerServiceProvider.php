@@ -6,6 +6,24 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
+use Modules\Customer\Contracts\CompareItem as CompareItemContract;
+use Modules\Customer\Models\CompareItem;
+
+use Modules\Customer\Contracts\Customer as CustomerContract;
+use Modules\Customer\Models\Customer;
+
+use Modules\Customer\Contracts\CustomerAddress as CustomerAddressContract;
+use Modules\Customer\Models\CustomerAddress;
+
+use Modules\Customer\Contracts\CustomerGroup as CustomerGroupContract;
+use Modules\Customer\Models\CustomerGroup;
+
+use Modules\Customer\Contracts\CustomerNote as CustomerNoteContract;
+use Modules\Customer\Models\CustomerNote;
+
+use Modules\Customer\Contracts\Wishlist as WishlistContract;
+use Modules\Customer\Models\Wishlist;
+
 class CustomerServiceProvider extends ServiceProvider
 {
     use PathNamespace;
@@ -25,6 +43,7 @@ class CustomerServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $this->registerModelProxies();
     }
 
     /**
@@ -66,8 +85,8 @@ class CustomerServiceProvider extends ServiceProvider
             $this->loadTranslationsFrom($langPath, $this->nameLower);
             $this->loadJsonTranslationsFrom($langPath);
         } else {
-            $this->loadTranslationsFrom(module_path($this->name, 'lang'), $this->nameLower);
-            $this->loadJsonTranslationsFrom(module_path($this->name, 'lang'));
+            $this->loadTranslationsFrom(module_path($this->name, 'resources/lang'), $this->nameLower);
+            $this->loadJsonTranslationsFrom(module_path($this->name, 'resources/lang'));
         }
     }
 
@@ -114,5 +133,38 @@ class CustomerServiceProvider extends ServiceProvider
         }
 
         return $paths;
+    }
+
+
+    public function registerModelProxies() {
+        $this->app->concord->registerModel(
+            CompareItemContract::class,
+            CompareItem::class
+        );
+
+        $this->app->concord->registerModel(
+            CustomerContract::class,
+            Customer::class
+        );
+
+        $this->app->concord->registerModel(
+            CustomerAddressContract::class,
+            CustomerAddress::class
+        );
+
+        $this->app->concord->registerModel(
+            CustomerGroupContract::class,
+            CustomerGroup::class
+        );
+
+        $this->app->concord->registerModel(
+            CustomerNoteContract::class,
+            CustomerNote::class
+        );
+
+        $this->app->concord->registerModel(
+            WishlistContract::class,
+            Wishlist::class
+        );
     }
 }

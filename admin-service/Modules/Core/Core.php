@@ -8,15 +8,22 @@ use Illuminate\Support\Facades\DB;
 use Modules\Core\Repositories\LocaleRepository;
 use Modules\Core\Models\Channel;
 use Modules\Core\Repositories\ChannelRepository;
+use Modules\Core\Repositories\CurrencyRepository;
+use Modules\Core\Repositories\ExchangeRateRepository;
+use Modules\Core\Concerns\CurrencyFormatter;
 
 
 
 class Core
 {
 
+    use CurrencyFormatter;
+
     public function __construct(
         protected ChannelRepository $channelRepository,
         protected LocaleRepository $localeRepository,
+        protected CurrencyRepository $currencyRepository,
+        protected ExchangeRateRepository $exchangeRateRepository,
     ) {}
 
 
@@ -44,6 +51,21 @@ class Core
      */
     protected $currentChannel;
 
+
+    /**
+     * Currency.
+     *
+     * @var \Modules\Core\Models\Currency
+     */
+    protected $currentCurrency;
+
+
+     /**
+     * Exchange rates
+     *
+     * @var array
+     */
+    protected $exchangeRates = [];
 
     /**
      * Return all locales.
@@ -177,8 +199,182 @@ class Core
         return $this->currentChannel;
     }
 
+    /**
+     * Returns the default channel code configured in `config/app.php`.
+     */
+    public function getDefaultChannelCode(): string
+    {
+        return $this->getDefaultChannel()?->code;
+    }
 
+    /**
+     * Returns base channel's currency model.
+     *
+     * @return \Modules\Core\Contracts\Currency
+     */
+    public function getChannelBaseCurrency()
+    {
+        return $this->getCurrentChannel()->base_currency;
+    }
+
+    /**
+     * Returns current channel's currency model.
+     *
+     * Will fallback to base currency if not set.
+     *
+     * @return \Modules\Core\Contracts\Currency
+     */
+    public function getCurrentCurrency()
+    {
+        if ($this->currentCurrency) {
+            return $this->currentCurrency;
+        }
+
+        return $this->currentCurrency = $this->getChannelBaseCurrency();
+    }
+
+
+    /**
+     * Returns current channel's currency code.
+     *
+     * @return string
+     */
+    public function getCurrentCurrencyCode()
+    {
+        return $this->getCurrentCurrency()?->code;
+    }
+
+    /**
+     * Get channel code from request.
+     *
+     * @param  bool  $fallback  optional
+     * @return string
+     */
+    public function getRequestedChannelCode($fallback = true)
+    {
+        $channelCode = request()->get('channel');
+
+        if (! $fallback) {
+            return $channelCode;
+        }
+
+        return $channelCode ?: ($this->getCurrentChannelCode() ?: $this->getDefaultChannelCode());
+    }
+
+
+    /**
+     * Retrieve information from payment configuration.
+     */
+    public function getConfigData(string $field, ?string $currentChannelCode = null, ?string $currentLocaleCode = null): mixed
+    {
+        return system_config()->getConfigData($field, $currentChannelCode, $currentLocaleCode);
+    }
+
+    /**
+     * Get config field.
+     *
+     * @param  string  $fieldName
+     * @return array
+     */
+    public function getConfigField($fieldName)
+    {
+        return system_config()->getConfigField($fieldName);
+    }
+
+    /**
+     * Returns exchange rates.
+     *
+     * @return object
+     */
+    public function getExchangeRate($targetCurrencyId)
+    {
+        if (array_key_exists($targetCurrencyId, $this->exchangeRates)) {
+            return $this->exchangeRates[$targetCurrencyId];
+        }
+
+        return $this->exchangeRates[$targetCurrencyId] = $this->exchangeRateRepository->findOneWhere([
+            'target_currency' => $targetCurrencyId,
+        ]);
+    }
+
+
+     /**
+     * Converts price.
+     *
+     * @param  float  $amount
+     * @param  string  $targetCurrencyCode
+     * @return string
+     */
+    public function convertPrice($amount, $targetCurrencyCode = null)
+    {
+        $targetCurrency = ! $targetCurrencyCode
+            ? $this->getCurrentCurrency()
+            : $this->currencyRepository->findOneByField('code', $targetCurrencyCode);
+
+        if (! $targetCurrency) {
+            return $amount;
+        }
+
+        $exchangeRate = $this->getExchangeRate($targetCurrency->id);
+
+        if (! $exchangeRate) {
+            return $amount;
+        }
+
+        return (float) $amount * $exchangeRate->rate;
+    }
+
+    /**
+     * Format and convert price with currency symbol.
+     *
+     * @param  float  $price
+     * @return string
+     */
+    public function currency($amount = 0)
+    {
+        if (is_null($amount)) {
+            $amount = 0;
+        }
+
+        return $this->formatPrice($this->convertPrice($amount));
+    }
+
+
+     /**
+     * Format price.
+     */
+    public function formatPrice(?float $price, ?string $currencyCode = null): string
+    {
+        if (is_null($price)) {
+            $price = 0;
+        }
+
+        $currency = $currencyCode
+            ? $this->getAllCurrencies()->where('code', $currencyCode)->first()
+            : $this->getCurrentCurrency();
+
+        return $this->formatCurrency($price, $currency);
+    }
     
+    /**
+     * Returns all currencies.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAllCurrencies()
+    {
+        return $this->currencyRepository->all();
+    }
+
+     /**
+     * Returns all channels.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAllChannels()
+    {
+        return $this->channelRepository->all();
+    }
 
 
 }

@@ -1,7 +1,7 @@
 <?php
 
 use Modules\Core\Core;
-
+use Modules\Core\SystemConfig;
 
 if (! function_exists('core')) {
     /**
@@ -10,6 +10,17 @@ if (! function_exists('core')) {
     function core(): Core
     {
         return app('core');
+    }
+}
+
+
+if (! function_exists('system_config')) {
+    /**
+     * System Config helper.
+     */
+    function system_config(): SystemConfig
+    {
+        return app('system_config');
     }
 }
 
