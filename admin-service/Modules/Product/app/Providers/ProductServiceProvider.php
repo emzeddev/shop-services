@@ -27,14 +27,11 @@ use Modules\Product\Models\ProductCustomerGroupPrice;
 use Modules\Product\Contracts\ProductDownloadableLink as ProductDownloadableLinkContract;
 use Modules\Product\Models\ProductDownloadableLink;
 
-use Modules\Product\Contracts\ProductDownloadableLinkTranslation as ProductDownloadableLinkTranslationContract;
-use Modules\Product\Models\ProductDownloadableLinkTranslation;
+
 
 use Modules\Product\Contracts\ProductDownloadableSample as ProductDownloadableSampleContract;
 use Modules\Product\Models\ProductDownloadableSample;
 
-use Modules\Product\Contracts\ProductDownloadableSampleTranslation as ProductDownloadableSampleTranslationContract;
-use Modules\Product\Models\ProductDownloadableSampleTranslation;
 
 use Modules\Product\Contracts\ProductFlat as ProductFlatContract;
 use Modules\Product\Models\ProductFlat;
@@ -217,20 +214,12 @@ class ProductServiceProvider extends ServiceProvider
             ProductDownloadableLink::class
         );  
 
-        $this->app->concord->registerModel(
-            ProductDownloadableLinkTranslationContract::class,
-            ProductDownloadableLinkTranslation::class
-        );  
 
         $this->app->concord->registerModel(
             ProductDownloadableSampleContract::class,
             ProductDownloadableSample::class
         );  
 
-        $this->app->concord->registerModel(
-            ProductDownloadableSampleTranslationContract::class,
-            ProductDownloadableSampleTranslation::class
-        );  
 
         $this->app->concord->registerModel(
             ProductFlatContract::class,

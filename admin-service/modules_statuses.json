@@ -8,5 +8,8 @@
     "Product": true,
     "Inventory": true,
     "Customer": true,
-    "Sales": true
+    "Sales": true,
+    "Checkout": true,
+    "CatalogRule": true,
+    "Rule": true
 }
