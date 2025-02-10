@@ -6,6 +6,46 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
+use Modules\Sales\Contracts\DownloadableLinkPurchased as DownloadableLinkPurchasedContract;
+use Modules\Sales\Models\DownloadableLinkPurchased;
+
+use Modules\Sales\Contracts\Invoice as InvoiceContract;
+use Modules\Sales\Models\Invoice;
+
+use Modules\Sales\Contracts\InvoiceItem as InvoiceItemContract;
+use Modules\Sales\Models\InvoiceItem;
+
+use Modules\Sales\Contracts\Order as OrderContract;
+use Modules\Sales\Models\Order;
+
+use Modules\Sales\Contracts\OrderAddress as OrderAddressContract;
+use Modules\Sales\Models\OrderAddress;
+
+use Modules\Sales\Contracts\OrderComment as OrderCommentContract;
+use Modules\Sales\Models\OrderComment;
+
+use Modules\Sales\Contracts\OrderItem as OrderItemContract;
+use Modules\Sales\Models\OrderItem;
+
+use Modules\Sales\Contracts\OrderPayment as OrderPaymentContract;
+use Modules\Sales\Models\OrderPayment;
+
+use Modules\Sales\Contracts\OrderTransaction as OrderTransactionContract;
+use Modules\Sales\Models\OrderTransaction;
+
+use Modules\Sales\Contracts\Refund as RefundContract;
+use Modules\Sales\Models\Refund;
+
+use Modules\Sales\Contracts\RefundItem as RefundItemContract;
+use Modules\Sales\Models\RefundItem;
+
+
+use Modules\Sales\Contracts\Shipment as ShipmentContract;
+use Modules\Sales\Models\Shipment;
+
+use Modules\Sales\Contracts\ShipmentItem as ShipmentItemContract;
+use Modules\Sales\Models\ShipmentItem;
+
 class SalesServiceProvider extends ServiceProvider
 {
     use PathNamespace;
@@ -25,6 +65,7 @@ class SalesServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $this->registerModelProxies();
     }
 
     /**
@@ -66,8 +107,8 @@ class SalesServiceProvider extends ServiceProvider
             $this->loadTranslationsFrom($langPath, $this->nameLower);
             $this->loadJsonTranslationsFrom($langPath);
         } else {
-            $this->loadTranslationsFrom(module_path($this->name, 'lang'), $this->nameLower);
-            $this->loadJsonTranslationsFrom(module_path($this->name, 'lang'));
+            $this->loadTranslationsFrom(module_path($this->name, 'resources/lang'), $this->nameLower);
+            $this->loadJsonTranslationsFrom(module_path($this->name, 'resources/lang'));
         }
     }
 
@@ -114,5 +155,79 @@ class SalesServiceProvider extends ServiceProvider
         }
 
         return $paths;
+    }
+
+
+
+    public function registerModelProxies() {
+        $this->app->concord->registerModel(
+            DownloadableLinkPurchasedContract::class,
+            DownloadableLinkPurchased::class
+        );
+
+        $this->app->concord->registerModel(
+            InvoiceContract::class,
+            Invoice::class
+        );
+
+
+        $this->app->concord->registerModel(
+            InvoiceItemContract::class,
+            InvoiceItem::class
+        );
+
+        $this->app->concord->registerModel(
+            OrderContract::class,
+            Order::class
+        );
+
+        $this->app->concord->registerModel(
+            OrderAddressContract::class,
+            OrderAddress::class
+        );
+
+        $this->app->concord->registerModel(
+            OrderCommentContract::class,
+            OrderComment::class
+        );
+
+        $this->app->concord->registerModel(
+            OrderItemContract::class,
+            OrderItem::class
+        );
+
+
+        $this->app->concord->registerModel(
+            OrderPaymentContract::class,
+            OrderPayment::class
+        );
+
+        $this->app->concord->registerModel(
+            OrderTransactionContract::class,
+            OrderTransaction::class
+        ); 
+        
+        $this->app->concord->registerModel(
+            RefundContract::class,
+            Refund::class
+        );
+
+        $this->app->concord->registerModel(
+            RefundItemContract::class,
+            RefundItem::class
+        );
+
+
+        $this->app->concord->registerModel(
+            ShipmentContract::class,
+            Shipment::class
+        );
+
+        $this->app->concord->registerModel(
+            ShipmentItemContract::class,
+            ShipmentItem::class
+        );
+
+        
     }
 }
