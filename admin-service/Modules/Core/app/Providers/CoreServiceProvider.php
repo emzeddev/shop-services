@@ -7,6 +7,10 @@ use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 use Modules\Core\Core;
 use Modules\Core\Facades\SystemConfig as SystemConfigFacade;
+use Elastic\Elasticsearch\Client as ElasticSearchClient;
+use Modules\Core\ElasticSearch;
+use Modules\Core\Facades\ElasticSearch as ElasticSearchFacade;
+use Illuminate\Foundation\AliasLoader;
 
 use Modules\Core\Contracts\Channel as ChannelContract;
 use Modules\Core\Models\Channel;
@@ -81,12 +85,25 @@ class CoreServiceProvider extends ServiceProvider
     protected function registerFacades(): void
     {
 
+        $loader = AliasLoader::getInstance();
+
         $this->app->singleton('core', function () {
             return app()->make(Core::class);
         });
 
         $this->app->singleton('system_config', function () {
             return app()->make(SystemConfigFacade::class);
+        });
+
+
+        $this->app->singleton('elasticsearch', function () {
+            return new ElasticSearch;
+        });
+
+        $loader->alias('elasticsearch', ElasticSearchFacade::class);
+
+        $this->app->singleton(ElasticSearchClient::class, function () {
+            return app()->make('elasticsearch')->connection();
         });
 
 

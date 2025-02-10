@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\CatalogRule\Console\Commands;
+namespace Modules\CatalogRule\Console;
 
 use Illuminate\Console\Command;
 use Modules\CatalogRule\Helpers\CatalogRuleIndex;

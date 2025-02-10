@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Product\Console\Commands;
+namespace Modules\Product\Console;
 
 use Illuminate\Console\Command;
 use Modules\Product\Helpers\Indexers\ElasticSearch;

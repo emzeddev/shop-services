@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.2",
         "astrotomic/laravel-translatable": "^11.15",
+        "elasticsearch/elasticsearch": "^8.17",
         "intervention/image": "^2.7",
         "kalnoy/nestedset": "^6.0",
         "konekt/concord": "^1.15",
