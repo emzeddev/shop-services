@@ -13,5 +13,8 @@
     "CatalogRule": true,
     "Rule": true,
     "Shipping": true,
-    "Tax": true
+    "Tax": true,
+    "Marketing": true,
+    "CMS": true,
+    "Sitemap": true
 }

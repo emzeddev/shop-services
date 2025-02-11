@@ -26,7 +26,7 @@ use Modules\Product\Http\Controllers\ProductController;
 Route::controller(ProductController::class)->prefix('products')->group(function () {
         Route::get('/sync', 'sync')->name('admin.catalog.products.sync');
 
-        // Route::get('', 'index')->name('admin.catalog.products.index');
+        Route::get('', 'index')->name('admin.catalog.products.index');
 
         // Route::post('create', 'store')->name('admin.catalog.products.store');
 
