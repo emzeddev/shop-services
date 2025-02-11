@@ -11,5 +11,7 @@
     "Sales": true,
     "Checkout": true,
     "CatalogRule": true,
-    "Rule": true
+    "Rule": true,
+    "Shipping": true,
+    "Tax": true
 }
