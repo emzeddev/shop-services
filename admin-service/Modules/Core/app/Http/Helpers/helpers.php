@@ -24,4 +24,17 @@ if (! function_exists('system_config')) {
     }
 }
 
+
+if (! function_exists('clean_path')) {
+    /**
+     * Clean path.
+    */
+    function clean_path(string $path): string
+    {
+        return collect(explode('/', $path))
+            ->filter(fn ($segment) => ! empty($segment))
+            ->join('/');
+    }
+}
+
 ?>

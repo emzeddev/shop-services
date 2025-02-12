@@ -66,7 +66,7 @@ class Sitemap extends Model implements SitemapContract
 
     /**
      * Create a new factory instance for the model.
-     */
+    */
     protected static function newFactory(): Factory
     {
         return SitemapFactory::new();

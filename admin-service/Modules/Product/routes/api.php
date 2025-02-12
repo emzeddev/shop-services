@@ -28,9 +28,11 @@ Route::controller(ProductController::class)->prefix('products')->group(function 
 
         Route::get('', 'index')->name('admin.catalog.products.index');
 
-        // Route::post('create', 'store')->name('admin.catalog.products.store');
+        Route::get('create', 'create')->name('admin.catalog.products.create');
 
-        // Route::get('copy/{id}', 'copy')->name('admin.catalog.products.copy');
+        Route::post('create', 'store')->name('admin.catalog.products.store');
+
+        Route::get('copy/{id}', 'copy')->name('admin.catalog.products.copy');
 
         // Route::get('edit/{id}', 'edit')->name('admin.catalog.products.edit');
 

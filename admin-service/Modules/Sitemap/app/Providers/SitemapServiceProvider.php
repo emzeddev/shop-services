@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
 
+use Modules\Sitemap\Contracts\Sitemap as SitemapContract;
+use Modules\Sitemap\Models\Sitemap;
+
 class SitemapServiceProvider extends ServiceProvider
 {
     use PathNamespace;
@@ -25,6 +28,7 @@ class SitemapServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+        $this->registerModelProxies();
     }
 
     /**
@@ -114,5 +118,13 @@ class SitemapServiceProvider extends ServiceProvider
         }
 
         return $paths;
+    }
+
+    public function registerModelProxies() {
+        $this->app->concord->registerModel(
+            SitemapContract::class,
+            Sitemap::class
+        );
+
     }
 }
