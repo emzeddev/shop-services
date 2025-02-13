@@ -16,5 +16,6 @@
     "Tax": true,
     "Marketing": true,
     "CMS": true,
-    "Sitemap": true
+    "Sitemap": true,
+    "Faker": true
 }

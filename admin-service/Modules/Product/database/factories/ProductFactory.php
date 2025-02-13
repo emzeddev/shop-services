@@ -35,7 +35,7 @@ class ProductFactory extends Factory
     {
         return [
             'sku'                 => $this->faker->uuid,
-            'attribute_family_id' => 1,
+            'attribute_family_id' => 30,
         ];
     }
 

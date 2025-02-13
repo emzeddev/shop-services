@@ -21,13 +21,12 @@ class Builder extends BaseBuilder
      *
      * @throws \InvalidArgumentException
      */
-    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
+    public function paginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null, $total = null)
     {
         $page = $page ?: Paginator::resolveCurrentPage($pageName);
-
         $perPage = $perPage ?: $this->model->getPerPage();
 
-        $results = ($total = $this->toBase()->getCountForPagination($columns))
+        $results = ($total ?? $this->toBase()->getCountForPagination($columns))
             ? $this->forPage($page, $perPage)->get($columns)
             : $this->model->newCollection();
 
@@ -36,4 +35,5 @@ class Builder extends BaseBuilder
             'pageName' => $pageName,
         ]);
     }
+
 }

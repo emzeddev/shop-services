@@ -1,0 +1,11 @@
+{
+    "name": "Faker",
+    "alias": "faker",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Faker\\Providers\\FakerServiceProvider"
+    ],
+    "files": []
+}
