@@ -5,61 +5,43 @@ namespace Modules\Product\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use Illuminate\Http\JsonResponse;
+use Modules\Product\Repositories\ProductRepository;
+
 class GroupedController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Create a new controller instance.
      */
-    public function index()
-    {
-        return view('product::index');
-    }
+    public function __construct(protected ProductRepository $productRepository) {}
 
     /**
-     * Show the form for creating a new resource.
+     * Returns the compare items of the customer.
      */
-    public function create()
+    public function options(int $id): JsonResponse
     {
-        return view('product::create');
-    }
+        $product = $this->productRepository->findOrFail($id);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $options = $product->grouped_products()->orderBy('sort_order')->get();
 
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('product::show');
-    }
+        $products = [];
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('product::edit');
-    }
+        foreach ($options as $option) {
+            if (! $option->associated_product->getTypeInstance()->isSaleable()) {
+                continue;
+            }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+            $products[] = [
+                'id'              => $option->associated_product->id,
+                'name'            => $option->associated_product->name,
+                'qty'             => $option->qty,
+                'price'           => $price = $option->associated_product->getTypeInstance()->getFinalPrice(),
+                'formatted_price' => core()->formatPrice($price),
+            ];
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
+        return new JsonResponse([
+            'data' => $products,
+        ] , JsonResponse::HTTP_OK);
     }
 }

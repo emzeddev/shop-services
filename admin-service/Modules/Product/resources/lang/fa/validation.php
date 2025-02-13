@@ -32,4 +32,16 @@ return [
     'new_in'                       => 'مقدار جدید بودن محصول باید ۰ یا ۱ باشد.',
     'featured_required'            => 'فیلد ویژه بودن محصول الزامی است.',
     'featured_in'                  => 'مقدار ویژه بودن محصول باید ۰ یا ۱ باشد.',
+
+    'inventories_required'          => 'فیلد موجودی الزامی است.',
+    'inventories_array'             => 'موجودی‌ها باید به صورت یک آرایه باشند.',
+    'inventories_per_required'          => 'هر مورد موجودی الزامی است.',
+    'inventories_numeric'           => 'هر مورد موجودی باید یک عدد باشد.',
+    'inventories_min'               => 'هر مورد موجودی باید حداقل 0 باشد.',
+
+    'indices_required'   => 'فیلد indices الزامی است.',
+    'indices_array'      => 'فیلد indices باید یک آرایه باشد.',
+    'indices_*.integer'  => 'هر مقدار در آرایه indices باید یک عدد صحیح باشد.',
+    
+    
 ];

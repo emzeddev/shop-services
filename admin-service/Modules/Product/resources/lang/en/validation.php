@@ -33,6 +33,18 @@ return [
     'new_in'                       => 'The "new product" value must be 0 or 1.',
     'featured_required'            => 'The "featured product" field is required.',
     'featured_in'                  => 'The "featured product" value must be 0 or 1.',
+
+    'inventories_required'          => 'The inventories field is required.',
+    'inventories_array'             => 'The inventories must be an array.',
+    'inventories_per_required'      => 'Each inventory item is required.',
+    'inventories_numeric'           => 'Each inventory item must be a number.',
+    'inventories_min'               => 'Each inventory item must be at least 0.',
+    
+    
+    'indices_required'   => 'The indices field is required.',
+    'indices_array'      => 'The indices must be an array.',
+    'indices_per_integer'  => 'Each item in the indices array must be an integer.',
+
     
     
  

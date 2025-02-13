@@ -19,6 +19,10 @@ use Modules\Product\Http\Requests\CreateProductRequest;
 use Modules\Attribute\Http\Resources\AttributeResource;
 use Modules\Product\Helpers\ProductType;
 use Modules\Product\Http\Requests\ProductForm;
+use Modules\Product\Http\Requests\InventoryRequest;
+use Modules\Product\Http\Requests\MassDestroyRequest;
+use Modules\Product\Http\Requests\MassUpdateRequest;
+use Modules\Product\Http\Resources\ProductResource;
 
 class ProductController extends Controller
 {
@@ -168,7 +172,215 @@ class ProductController extends Controller
                 'message' => trans('product::app.products.update-success'),
                 'product' => $product
             ],
-        ] , JsonResponse::HTTP_CREATED);
+        ] , JsonResponse::HTTP_OK);
+    }
+
+
+     /**
+     * Update inventories.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function updateInventories(InventoryRequest $inventoryRequest, int $id)
+    {
+        $product = $this->productRepository->findOrFail($id);
+
+
+        $this->productInventoryRepository->saveInventories(request()->all(), $product);
+
+
+        return new JsonResponse([
+            'data' => [
+                'message' => __('product::app.products.saved-inventory-message'),
+                'product' => $this->productInventoryRepository->where('product_id', $product->id)->sum('qty')
+            ],
+        ] , JsonResponse::HTTP_OK);
+
+    }
+
+
+
+    /**
+     * Uploads downloadable file.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function uploadLink(int $id)
+    {
+        return new JsonResponse([
+            "data" => $this->productDownloadableLinkRepository->upload(request()->all(), $id)
+        ] , JsonResponse::HTTP_OK);
+    }
+
+
+
+    /**
+     * Copy a given Product.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function copy(int $id)
+    {
+        try {
+
+            $product = $this->productRepository->copy($id);
+
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'data' => [
+                    'message' => $e->getMessage(),
+                ],
+            ] , JsonResponse::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        session()->flash('success', trans('product::app.products.product-copied'));
+
+        return new JsonResponse([
+            'data' => [
+                'message' => trans('product::app.products.product-copied'),
+                'redirect_to_product' => $product->id // redirect to edit page product
+            ],
+        ] , JsonResponse::HTTP_OK);
+
+    }
+
+
+    /**
+     * Uploads downloadable sample file.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function uploadSample(int $id)
+    {
+        return new JsonResponse([
+            "data" => $this->productDownloadableSampleRepository->upload(request()->all(), $id)
+        ] , JsonResponse::HTTP_OK);
+    }
+
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        try {
+            $this->productRepository->delete($id);
+
+            return new JsonResponse([
+                'message' => trans('product::app.products.delete-success'),
+            ] , JsonResponse::HTTP_OK);
+        } catch (\Exception $e) {
+            report($e);
+        }
+
+        return new JsonResponse([
+            'message' => trans('product::app.products.delete-failed'),
+        ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+
+    /**
+     * Mass delete the products.
+     */
+    public function massDestroy(MassDestroyRequest $massDestroyRequest): JsonResponse
+    {
+        $productIds = $massDestroyRequest->input('indices');
+
+        try {
+            foreach ($productIds as $productId) {
+                $product = $this->productRepository->find($productId);
+
+                if (isset($product)) {
+                    $this->productRepository->delete($productId);
+                }
+            }
+
+            return new JsonResponse([
+                'message' => trans('admin::app.catalog.products.index.datagrid.mass-delete-success'),
+            ] , JsonResponse::HTTP_OK);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'message' => trans('admin::app.catalog.products.index.datagrid.mass-delete-success'),
+            ] , JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    /**
+     * Mass update the products.
+     */
+    public function massUpdate(MassUpdateRequest $massUpdateRequest): JsonResponse
+    {
+        $productIds = $massUpdateRequest->input('indices');
+
+        foreach ($productIds as $productId) {
+            $product = $this->productRepository->update([
+                'status'  => $massUpdateRequest->input('value'),
+            ], $productId, ['status']);
+
+        }
+
+        return new JsonResponse([
+            'message' => trans('product::app.products.index.datagrid.mass-update-success'),
+        ], JsonResponse::HTTP_OK);
+    }
+
+
+    
+    /**
+     * Result of search product.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function search()
+    {
+        $results = [];
+
+        $searchEngine = 'database';
+
+        if (
+            core()->getConfigData('catalog.products.search.engine') == 'elastic'
+            && core()->getConfigData('catalog.products.search.admin_mode') == 'elastic'
+        ) {
+            $searchEngine = 'elastic';
+
+            $indexNames = core()->getAllChannels()->map(function ($channel) {
+                return 'products_'.$channel->code.'_'.app()->getLocale().'_index';
+            })->toArray();
+        }
+
+        $products = $this->productRepository
+            ->setSearchEngine($searchEngine)
+            ->getAll([
+                'index' => $indexNames ?? null,
+                'name'  => request('query'),
+                'sort'  => 'created_at',
+                'order' => 'desc',
+            ]);
+
+        return new JsonResponse([
+            'data' => ProductResource::collection($products),
+        ], JsonResponse::HTTP_OK);
+
+    }
+
+
+
+     /**
+     * Download image or file.
+     *
+     * @param  int  $productId
+     * @param  int  $attributeId
+     * @return \Illuminate\Http\Response
+     */
+    public function download($productId, $attributeId)
+    {
+        $productAttribute = $this->productAttributeValueRepository->findOneWhere([
+            'product_id'   => $productId,
+            'attribute_id' => $attributeId,
+        ]);
+
+        return Storage::download($productAttribute['text_value']);
     }
 
 }

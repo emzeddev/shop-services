@@ -5,61 +5,36 @@ namespace Modules\Product\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use Illuminate\Http\JsonResponse;
+use Modules\Product\Repositories\ProductRepository;
+
 class DownloadableController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Create a new controller instance.
      */
-    public function index()
-    {
-        return view('product::index');
-    }
+    public function __construct(protected ProductRepository $productRepository) {}
 
     /**
-     * Show the form for creating a new resource.
+     * Returns the compare items of the customer.
      */
-    public function create()
+    public function options(int $id): JsonResponse
     {
-        return view('product::create');
-    }
+        $product = $this->productRepository->findOrFail($id);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $links = [];
 
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('product::show');
-    }
+        foreach ($product->downloadable_links as $link) {
+            $links[] = [
+                'id'              => $link->id,
+                'title'           => $link->title,
+                'price'           => $link->price,
+                'formatted_price' => core()->formatPrice($link->price),
+            ];
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('product::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
+        return new JsonResponse([
+            'data' => $links,
+        ] , JsonResponse::HTTP_OK);
     }
 }
