@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Faker\Commands\Console;
+namespace Modules\Faker\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Bus;
@@ -19,14 +19,14 @@ class Faker extends Command
      * Product type to create
      *
      * @var string
-     */
+    */
     protected $productType = null;
 
     /**
      * Number of records to create
      *
      * @var int|array
-     */
+    */
     protected $count = null;
 
     /**

@@ -168,18 +168,16 @@ class Product
                             ]);
 
                             $variant->attribute_values()->updateOrCreate([
-                                'attribute_id'  => 30,
+                                'attribute_id'  => 7,
                             ], [
                                 'boolean_value' => 0,
                             ]);
 
-                            // Event::dispatch('catalog.product.update.after', $variant);
                         })
                         ->count(4)
                         ->create();
                 }
 
-                // Event::dispatch('catalog.product.update.after', $product);
             })
             ->count($count)
             ->create();

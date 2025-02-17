@@ -17,5 +17,9 @@
     "Marketing": true,
     "CMS": true,
     "Sitemap": true,
-    "Faker": true
+    "Faker": true,
+    "Payment": true,
+    "Theme": true,
+    "Notification": true,
+    "CartRule": true
 }

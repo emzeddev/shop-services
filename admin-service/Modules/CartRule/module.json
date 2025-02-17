@@ -1,0 +1,11 @@
+{
+    "name": "CartRule",
+    "alias": "cartrule",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\CartRule\\Providers\\CartRuleServiceProvider"
+    ],
+    "files": []
+}

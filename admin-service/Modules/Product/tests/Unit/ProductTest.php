@@ -35,12 +35,12 @@ class ProductTest extends TestCase
         // Assert: بررسی ساختار پاسخ و صحت داده‌ها
         $response->assertStatus(200)
                  ->assertJsonStructure([
-                     'status',
-                     'data' => [
-                         '*' => [
-                             'id', 'name', 'sku', 'price'
-                         ]
-                     ]
+                    'status',
+                    'data' => [
+                        '*' => [
+                            'id', 'name', 'sku', 'price'
+                        ]
+                    ]
                  ])
                  ->assertJson(['status' => 200]);
     }
