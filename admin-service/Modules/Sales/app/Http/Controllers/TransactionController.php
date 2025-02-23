@@ -2,64 +2,131 @@
 
 namespace Modules\Sales\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Modules\Sales\DataGrids\OrderTransactionDataGrid;
+use App\Http\Controllers\Controller;
+use Modules\Sales\Http\Resources\TransactionResource;
+use Modules\Payment\Facades\Payment;
+use Modules\Sales\Models\Invoice;
+use Modules\Sales\Models\Order;
+use Modules\Sales\Repositories\InvoiceRepository;
+use Modules\Sales\Repositories\OrderRepository;
+use Modules\Sales\Repositories\OrderTransactionRepository;
+use Modules\Sales\Repositories\ShipmentRepository;
 
 class TransactionController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct(
+        protected OrderRepository $orderRepository,
+        protected InvoiceRepository $invoiceRepository,
+        protected ShipmentRepository $shipmentRepository,
+        protected OrderTransactionRepository $orderTransactionRepository
+    ) {}
+
+    /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
-        return view('sales::index');
+        if (request()->ajax()) {
+            return datagrid(OrderTransactionDataGrid::class)->process();
+        }
+
+        $paymentMethods = Payment::getSupportedPaymentMethods();
+
+        return view('admin::sales.transactions.index', compact('paymentMethods'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Save the transaction.
      */
-    public function create()
+    public function store(Request $request): JsonResponse
     {
-        return view('sales::create');
+        $this->validate(request(), [
+            'invoice_id'     => 'required',
+            'payment_method' => 'required',
+            'amount'         => 'required|numeric',
+        ]);
+
+        $invoice = $this->invoiceRepository->where('id', $request->invoice_id)->first();
+
+        if (! $invoice) {
+            return new JsonResponse([
+                'message' => trans('admin::app.sales.transactions.index.create.invoice-missing'),
+            ], 400);
+        }
+
+        $transactionAmtBefore = $this->orderTransactionRepository->where('invoice_id', $invoice->id)->sum('amount');
+
+        $transactionAmtFinal = $request->amount + $transactionAmtBefore;
+
+        if ($invoice->state == 'paid') {
+            return new JsonResponse([
+                'message' => trans('admin::app.sales.transactions.index.create.already-paid'),
+            ], 400);
+        }
+
+        if ($transactionAmtFinal > $invoice->base_grand_total) {
+            return new JsonResponse([
+                'message' => trans('admin::app.sales.transactions.index.create.transaction-amount-exceeds'),
+            ], 400);
+        }
+
+        if ($request->amount <= 0) {
+            return new JsonResponse([
+                'message' => trans('admin::app.sales.transactions.index.create.transaction-amount-zero'),
+            ], 400);
+        }
+
+        $order = $this->orderRepository->find($invoice->order_id);
+
+        $this->orderTransactionRepository->create([
+            'transaction_id' => bin2hex(random_bytes(20)),
+            'type'           => $request->payment_method,
+            'payment_method' => $request->payment_method,
+            'invoice_id'     => $invoice->id,
+            'order_id'       => $invoice->order_id,
+            'amount'         => $request->amount,
+            'status'         => 'paid',
+            'data'           => json_encode([
+                'paidAmount' => $request->amount,
+            ]),
+        ]);
+
+        $transactionTotal = $this->orderTransactionRepository->where('invoice_id', $invoice->id)->sum('amount');
+
+        if ($transactionTotal >= $invoice->base_grand_total) {
+            $shipments = $this->shipmentRepository->where('order_id', $invoice->order_id)->first();
+
+            $status = isset($shipments)
+                ? Order::STATUS_COMPLETED
+                : Order::STATUS_PROCESSING;
+
+            $this->orderRepository->updateOrderStatus($order, $status);
+
+            $this->invoiceRepository->updateState($invoice, Invoice::STATUS_PAID);
+        }
+
+        return new JsonResponse([
+            'message' => trans('admin::app.sales.transactions.index.create.transaction-saved'),
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Show the view for the specified resource.
      */
-    public function store(Request $request)
+    public function view(int $id): TransactionResource
     {
-        //
-    }
+        $transaction = $this->orderTransactionRepository->findOrFail($id);
 
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
-    {
-        return view('sales::show');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('sales::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
+        return new TransactionResource($transaction);
     }
 }
