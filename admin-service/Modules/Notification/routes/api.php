@@ -3,17 +3,16 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Notification\Http\Controllers\NotificationController;
 
-/*
- *--------------------------------------------------------------------------
- * API Routes
- *--------------------------------------------------------------------------
- *
- * Here is where you can register API routes for your application. These
- * routes are loaded by the RouteServiceProvider within a group which
- * is assigned the "api" middleware group. Enjoy building your API!
- *
-*/
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
-    Route::apiResource('notification', NotificationController::class)->names('notification');
+/**
+ * Notification routes.
+ */
+Route::controller(NotificationController::class)->group(function () {
+    Route::get('notifications', 'index')->name('admin.notification.index');
+
+    Route::get('get-notifications', 'getNotifications')->name('admin.notification.get_notification');
+
+    Route::get('viewed-notifications/{orderId}', 'viewedNotifications')->name('admin.notification.viewed_notification');
+
+    Route::post('read-all-notifications', 'readAllNotifications')->name('admin.notification.read_all');
 });

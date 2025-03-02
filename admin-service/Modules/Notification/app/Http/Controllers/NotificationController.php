@@ -2,64 +2,89 @@
 
 namespace Modules\Notification\Http\Controllers;
 
+use Modules\Notification\Repositories\NotificationRepository;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct(protected NotificationRepository $notificationRepository) {}
+
+    /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\View\View
      */
     public function index()
     {
-        return view('notification::index');
+        return view('admin::notifications.index');
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of the resource.
+     *
+     * @return array
      */
-    public function create()
+    public function getNotifications()
     {
-        return view('notification::create');
+        $params = request()->except('page');
+
+        $searchResults = count($params)
+            ? $this->notificationRepository->getParamsData($params)
+            : $this->notificationRepository->getAll();
+
+        $results = isset($searchResults['notifications']) ? $searchResults['notifications'] : $searchResults;
+
+        $statusCount = isset($searchResults['status_counts']) ? $searchResults['status_counts'] : '';
+
+        return [
+            'search_results' => $results,
+            'status_count'   => $statusCount,
+            'total_unread'   => $this->notificationRepository->where('read', 0)->count(),
+        ];
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Update the notification is reade or not.
+     *
+     * @param  int  $orderId
+     * @return \Illuminate\View\View
      */
-    public function store(Request $request)
+    public function viewedNotifications($orderId)
     {
-        //
+        if ($notification = $this->notificationRepository->where('order_id', $orderId)->first()) {
+            $notification->read = 1;
+
+            $notification->save();
+
+            return redirect()->route('admin.sales.orders.view', $orderId);
+        }
+
+        abort(404);
     }
 
     /**
-     * Show the specified resource.
+     * Update the notification is reade or not.
+     *
+     * @return array
      */
-    public function show($id)
+    public function readAllNotifications()
     {
-        return view('notification::show');
-    }
+        $this->notificationRepository->where('read', 0)->update(['read' => 1]);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('notification::edit');
-    }
+        $searchResults = $this->notificationRepository->getParamsData([
+            'limit' => 5,
+            'read'  => 0,
+        ]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
+        return [
+            'search_results'  => $searchResults,
+            'total_unread'    => $this->notificationRepository->where('read', 0)->count(),
+            'success_message' => trans('admin::app.notifications.marked-success'),
+        ];
     }
 }
